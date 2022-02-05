@@ -200,12 +200,12 @@ class ApplicationState extends ChangeNotifier {
         UserData.subject = Subject.values.firstWhere((element) =>
             const CaseInsensitiveEquality()
                 .equals(element.name, ((result.claims!['subject'] as String))));
-        UserData.teacher = true;
+        UserData.role = Role.teacher;
       }
       if (result.claims != null &&
           result.claims!['admin'] != null &&
           result.claims!['admin'] == true) {
-        UserData.administrator = true;
+        UserData.role = Role.administrator;
       }
       FirebaseFunctions functions = FirebaseFunctions.instance;
 

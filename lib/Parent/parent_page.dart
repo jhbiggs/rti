@@ -42,9 +42,9 @@ class _ParentFormState extends State<ParentForm> {
   @override
   initState() {
     super.initState();
-    students = Children.of(parent: UserData.parent).isEmpty
-        ? []
-        : Children.of(parent: UserData.parent);
+    // students = Children.of(parent: UserData.parent).isEmpty
+    //     ? []
+    //     : Children.of(parent: UserData.parent);
   }
 
   //get children from code
@@ -54,7 +54,6 @@ class _ParentFormState extends State<ParentForm> {
       (student) => student.getCode() == studentCode,
     );
     students.add(newStudent);
-    UserData.parent!.codeList.add(studentCode);
     setState(() {
       _studentCodeTextController.text = "";
     });

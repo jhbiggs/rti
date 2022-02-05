@@ -36,6 +36,8 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
   final _nameBoxController = BoxController();
   final _nameTextController = TextEditingController();
   final _studentSuggestions = Constants.studentTestList;
+  final _subjectBoxController = BoxController();
+  final _subjectSuggestions = Constants.subjects;
   late Student _selectedStudent;
 
   @override
@@ -52,18 +54,38 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
           child: Row(
             children: [
               Expanded(
-                  child: TextFormField(
-                controller: _subjectTextController,
-                decoration: const InputDecoration(
-                  hintText: 'subject',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'enter field value and continue';
-                  }
-                  return null;
-                },
-              )),
+                child: StyledButton(
+                    child: Row(children: [
+                      Expanded(
+                        child: FieldSuggestion(
+                          wSlideAnimation: true,
+                          fieldDecoration: const InputDecoration(
+                            hintText: 'Subject', // optional
+                          ),
+                          boxController: _subjectBoxController,
+                          textController: _subjectTextController,
+                          suggestionList: _subjectSuggestions,
+                          itemStyle: const SuggestionItemStyle(
+                            backgroundColor: Color(0xff000000),
+                            leading: Icon(Icons.person),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 1,
+                                spreadRadius: 1,
+                                offset: Offset(0, 2),
+                                color: Colors.blueAccent,
+                              ),
+                            ],
+                          ),
+                          onItemSelected: (value) {
+                            print(value);
+                          },
+                        ),
+                      ),
+                    ]),
+                    onPressed: () {}),
+              ),
               Expanded(
                   child: TextFormField(
                 controller: _standardTextController,

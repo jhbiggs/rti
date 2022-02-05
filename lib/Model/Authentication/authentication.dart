@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rti/Model/constants.dart';
 import 'package:rti/Model/role.dart';
 import 'package:rti/Model/subject.dart';
+import 'package:rti/Student/student.dart';
 
 import '../../widgets.dart';
 
@@ -439,6 +441,24 @@ class _PasswordFormState extends State<PasswordForm> {
     _emailController.text = widget.email;
   }
 
+  void _pushRelevantPage() {
+    switch (UserData.role) {
+      case Role.student:
+        Navigator.of(context).pushNamed('/student');
+        break;
+      case Role.teacher:
+        Navigator.of(context).pushNamed('/teacher');
+        break;
+      case Role.administrator:
+        Navigator.of(context).pushNamed('/admin');
+        break;
+      case Role.parent:
+        Navigator.of(context).pushNamed('/parent');
+        break;
+      // }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -495,6 +515,7 @@ class _PasswordFormState extends State<PasswordForm> {
                               _emailController.text,
                               _passwordController.text,
                             );
+                            _pushRelevantPage();
                           }
                         },
                         child: const Text('SIGN IN'),

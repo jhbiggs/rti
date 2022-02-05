@@ -14,6 +14,16 @@ enum Subject {
 }
 
 extension SubjectExtension on Subject {
+  Map<String, dynamic> toJson() => {'name': name};
+
+  List<dynamic> get names {
+    var tempArray = [];
+    for (Subject subject in Subject.values) {
+      tempArray.add(subject.name);
+    }
+    return tempArray.toList();
+  }
+
   String get name {
     switch (this) {
       case Subject.art:

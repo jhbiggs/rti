@@ -7,6 +7,7 @@ import 'package:rti/Parent/parent.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import 'package:rti/Teacher/teacher.dart';
+import 'package:rti/subjects_page.dart';
 
 import '../Administrator/administrator.dart';
 import 'role.dart';
@@ -25,7 +26,7 @@ class Constants {
           ));
   static List<Parent> parents =
       List.generate(30, (index) => Parent(name: faker.person.name()));
-  static var subjects = teachers.map((element) => element.subject).toList();
+  static var subjects = Subject.values.map((e) => e.name).toList();
   static List<Group> groups =
       teachers.map((element) => Group(element.subject, element)).toList();
   static List<Teacher> teachers = [];
@@ -70,11 +71,11 @@ class UserData {
   late String lastName;
   late String userName;
   static Subject? subject;
-  static Parent? parent;
   static bool administrator = false;
   static bool teacher = false;
-  static Student? student;
-  late Role role;
+  static bool parent = false;
+  static bool student = false;
+  static late Role role = Role.teacher;
 
   String getFirstName() {
     return firstName;

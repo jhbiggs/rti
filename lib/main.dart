@@ -92,7 +92,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _firstNameTextController = TextEditingController();
   final _lastNameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
-  Role dropdownValue = Role.parent;
+  Role dropdownValue = Role.teacher;
 
   void _updateFormProgress() {
     final controllers = [
@@ -118,7 +118,6 @@ class _SignUpFormState extends State<SignUpForm> {
   void _pushRelevantPage() {
     switch (dropdownValue) {
       case Role.student:
-        UserData.student = Constants.studentTestList.first;
         Navigator.of(context).pushNamed('/student');
         break;
       case Role.teacher:
@@ -128,10 +127,6 @@ class _SignUpFormState extends State<SignUpForm> {
         Navigator.of(context).pushNamed('/admin');
         break;
       case Role.parent:
-        UserData.parent ??= Parent(
-            name:
-                "${_firstNameTextController.text} ${_lastNameTextController.text}");
-
         Navigator.of(context).pushNamed('/parent');
         break;
       // }
@@ -149,35 +144,35 @@ class _SignUpFormState extends State<SignUpForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Sign In', style: Theme.of(context).textTheme.headline4),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownButton<Role>(
-                value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward),
-                elevation: 16,
-                style: const TextStyle(color: Colors.grey),
-                underline: Container(
-                  height: 2,
-                  color: Colors.grey,
-                ),
-                onChanged: (Role? newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                  });
-                },
-                items: <Role>[
-                  Role.administrator,
-                  Role.parent,
-                  Role.teacher,
-                  Role.student
-                ].map<DropdownMenuItem<Role>>((Role value) {
-                  return DropdownMenuItem<Role>(
-                    value: value,
-                    child: Text(value.name.toUpperCase()),
-                  );
-                }).toList(),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: DropdownButton<Role>(
+            //     value: dropdownValue,
+            //     icon: const Icon(Icons.arrow_downward),
+            //     elevation: 16,
+            //     style: const TextStyle(color: Colors.grey),
+            //     underline: Container(
+            //       height: 2,
+            //       color: Colors.grey,
+            //     ),
+            //     onChanged: (Role? newValue) {
+            //       setState(() {
+            //         dropdownValue = newValue!;
+            //       });
+            //     },
+            //     items: <Role>[
+            //       Role.administrator,
+            //       Role.parent,
+            //       Role.teacher,
+            //       Role.student
+            //     ].map<DropdownMenuItem<Role>>((Role value) {
+            //       return DropdownMenuItem<Role>(
+            //         value: value,
+            //         child: Text(value.name.toUpperCase()),
+            //       );
+            //     }).toList(),
+            //   ),
+            // ),
             Column(children: [
               Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(
@@ -193,27 +188,27 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ]),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.resolveWith(
-                      (Set<MaterialState> states) {
-                    return states.contains(MaterialState.disabled)
-                        ? null
-                        : Colors.white;
-                  }),
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                      (Set<MaterialState> states) {
-                    return states.contains(MaterialState.disabled)
-                        ? null
-                        : Colors.red.shade900;
-                  }),
-                ),
-                onPressed: _pushRelevantPage,
-                child: const Text('Sign in'),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextButton(
+            //     style: ButtonStyle(
+            //       foregroundColor: MaterialStateProperty.resolveWith(
+            //           (Set<MaterialState> states) {
+            //         return states.contains(MaterialState.disabled)
+            //             ? null
+            //             : Colors.white;
+            //       }),
+            //       backgroundColor: MaterialStateProperty.resolveWith(
+            //           (Set<MaterialState> states) {
+            //         return states.contains(MaterialState.disabled)
+            //             ? null
+            //             : Colors.red.shade900;
+            //       }),
+            //     ),
+            //     onPressed: _pushRelevantPage,
+            //     child: const Text('Sign in'),
+            //   ),
+            // ),
           ],
         ),
       ),
