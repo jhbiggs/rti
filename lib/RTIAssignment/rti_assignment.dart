@@ -1,7 +1,7 @@
 import 'package:rti/Model/constants.dart';
 import 'package:rti/Student/student.dart';
 
-import 'group.dart';
+import '../group.dart';
 
 class RTIAssignment {
   late DateTime startDate;

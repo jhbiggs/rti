@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rti/rti_assignment.dart';
-import 'Model/Authentication/application_state.dart';
-import 'Model/Authentication/authentication.dart';
-import 'Model/constants.dart';
+import 'package:rti/RTIAssignment/rti_assignment.dart';
+import 'package:rti/RTIAssignment/rti_assignment.dart';
+import '../Model/Authentication/application_state.dart';
+import '../Model/Authentication/authentication.dart';
+import '../Model/constants.dart';
 import 'rti_assignment_list.dart';
 
 class RTIAssignmentsScreen extends StatelessWidget {
@@ -37,13 +38,13 @@ class RTIAssignments extends StatefulWidget {
 
 class _RTIAssignmentsState extends State<RTIAssignments> {
   late List<RTIAssignment> assignmentsInConstants;
-  @override
-  void initState() {
-    super.initState();
-    assignmentsInConstants = Constants.assignments;
-    assignmentsInConstants
-        .sort((a, b) => a.student.getName().compareTo(b.student.getName()));
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   assignmentsInConstants = Constants.assignments;
+  //   assignmentsInConstants
+  //       .sort((a, b) => a.student.getName().compareTo(b.student.getName()));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,6 @@ class _RTIAssignmentsState extends State<RTIAssignments> {
                         appState.addAssignmentToList(assignment),
                     assignments: appState.guestBookMessages,
                   ),
-                  Row(children: [Text("hello")]),
                   Center(
                       child: ListView.builder(
                     shrinkWrap: true,

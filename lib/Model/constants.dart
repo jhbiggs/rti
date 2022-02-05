@@ -4,7 +4,7 @@ import 'package:faker/faker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rti/Model/subject.dart';
 import 'package:rti/Parent/parent.dart';
-import 'package:rti/rti_assignment.dart';
+import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import 'package:rti/Teacher/teacher.dart';
 

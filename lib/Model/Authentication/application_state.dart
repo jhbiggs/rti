@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:rti/Firebase/firebase_options.dart';
 import 'package:rti/Model/role.dart';
 import 'package:rti/Model/subject.dart';
-import 'package:rti/rti_assignment.dart';
+import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import '../constants.dart';
 import 'authentication.dart';
@@ -57,16 +57,13 @@ class ApplicationState extends ChangeNotifier {
         });
     if (isTeacher) {
       _guestBookSubscription = FirebaseFirestore.instance
-          .collection('assignmentsBySubject')
-          .doc(teacherSubject)
           .collection('assignments')
+          .where('subject', isEqualTo: teacherSubject)
           .orderBy('start_date', descending: true)
           // .limit(30)
           .snapshots()
           .listen((snapshot) {
         _guestBookMessages = [];
-        print("your admin subject is ${UserData.subject}");
-
         for (final document in snapshot.docs) {
           _guestBookMessages.add(RTIAssignment(
             // endDate: (document.data()['end_date'] as DateTime),
@@ -86,8 +83,6 @@ class ApplicationState extends ChangeNotifier {
           .snapshots()
           .listen((snapshot) {
         _guestBookMessages = [];
-        print("your subject is ${UserData.subject}");
-
         for (final document in snapshot.docs) {
           _guestBookMessages.add(RTIAssignment(
             // endDate: (document.data()['end_date'] as DateTime),
@@ -108,14 +103,47 @@ class ApplicationState extends ChangeNotifier {
     );
     _connectToFirebaseEmulator();
 
-    FirebaseAuth.instance.userChanges().listen((user) {
+    FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         var resultForClaims = user.getIdTokenResult();
-
+        String teacherSubject = "";
+        await resultForClaims.then((result) => {
+              if (result.claims != null)
+                {
+                  isTeacher = result.claims!['teacher'] ?? false,
+                  teacherSubject = result.claims!['subject'] ?? 'no subject'
+                }
+            });
         _loginState = ApplicationLoginState.loggedIn;
-        _getMessages(resultForClaims);
-      }
+        if (isTeacher) {
+          _guestBookSubscription = FirebaseFirestore.instance
+              .collection('assignments')
+              .where('subject', isEqualTo: teacherSubject)
+              .orderBy('timestamp', descending: true)
+              .snapshots()
+              .listen((snapshot) {
+            _guestBookMessages = [];
+            for (final document in snapshot.docs) {
+              _guestBookMessages.add(
+                RTIAssignment(
+                    standard: document.data()['standard'],
+                    student: Student(name: document.data()['student_name']),
+                    subject: document.data()['subject'],
+                    startDate: DateTime.now()),
+              );
+            }
 
+            // _getMessages(resultForClaims);
+            notifyListeners();
+          });
+        }
+      } else {
+        _loginState = ApplicationLoginState.loggedOut;
+        // Add from here
+        _guestBookMessages = [];
+        _guestBookSubscription?.cancel();
+        // to here.
+      }
       notifyListeners();
     });
   }

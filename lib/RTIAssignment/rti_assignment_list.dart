@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:rti/rti_assignment.dart';
+import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/widgets.dart';
 
-import 'Student/student.dart';
-import 'Model/constants.dart';
+import '../Student/student.dart';
+import '../Model/constants.dart';
 
 class RtIAssignmentMessage {
   RtIAssignmentMessage({required this.teacherName, required this.objective});
@@ -38,29 +38,10 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
   final _studentSuggestions = Constants.studentTestList;
   late Student _selectedStudent;
 
-  // asyncBuildTeacherList() async {
-  //   if (UserData.teacher) {
-  //     widget.assignments = widget.assignments
-  //         .where((element) => element.subject == UserData.subject!.name)
-  //         .toList();
-  //   }
-  //   setState(() {});
-  // }
-
-  // void buildTeacherList() {
-  //   asyncBuildTeacherList();
-  // }
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   buildTeacherList();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: const EdgeInsets.all(8.0),
@@ -149,8 +130,8 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
               const SizedBox(width: 8),
               const Text('SEND')
             ]),
-            onPressed: () {
-              widget.addAssignment(RTIAssignment(
+            onPressed: () async {
+              await widget.addAssignment(RTIAssignment(
                   /*TODO: get the teacher name from the userInfo and add it to the assignment
                 Must have a model on the server checking the number of students already
                 in the class.*/

@@ -3,11 +3,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rti/Parent/parent.dart';
 import 'package:rti/Parent/parent_page.dart';
 import 'package:rti/role_page.dart';
-import 'package:rti/rti_assignments_page.dart';
+import 'package:rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:rti/Student/student_page.dart';
 import 'package:rti/subjects_page.dart';
-import 'package:rti/Teacher/teacher_list_page.dart';
-import 'package:rti/teacher_rti_student_list.dart';
+import 'package:rti/Administrator/teacher_list_page.dart';
 import 'package:rti/widgets.dart';
 
 import 'Administrator/admin_page.dart';
@@ -38,14 +37,14 @@ class SignUpApp extends StatelessWidget {
         '/welcome': (context) => const WelcomeScreen(),
         '/role': (context) => const RoleScreen(),
         '/parent': (context) => const ParentScreen(),
-        '/teacher': (context) => const TeacherRTIStudentScreen(),
+        '/teacher': (context) => const RTIAssignmentsScreen(),
         '/admin': (context) => const AdminScreen(),
         '/student': (context) => const StudentScreen(),
-        '/students': (context) => const TeacherRTIStudentScreen(),
+        '/students': (context) => const RTIAssignmentsScreen(),
         '/groups': (context) => const GroupScreen(),
         '/teachers': (context) => const TeachersScreen(),
         '/subjects': (context) => const SubjectsScreen(),
-        '/rti_assignments': (context) => const TeacherRTIStudentScreen(),
+        '/rti_assignments': (context) => const RTIAssignmentsScreen(),
       },
     );
   }
