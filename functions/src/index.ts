@@ -43,9 +43,11 @@ exports.myFunction = functions.firestore
           .doc(); //automatically generate unique id
           batch.set(docRef, assignment.data());
           });
+
         });
+
+        batch.commit();
       });
-      batch.commit();
         };
     });
 
