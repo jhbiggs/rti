@@ -456,6 +456,9 @@ class _PasswordFormState extends State<PasswordForm> {
         Navigator.of(context).pushNamed('/parent');
         break;
       // }
+      case Role.none:
+        // TODO: Handle this case.
+        break;
     }
   }
 

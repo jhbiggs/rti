@@ -116,7 +116,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void _pushRelevantPage() {
-    switch (dropdownValue) {
+    switch (UserData.role) {
       case Role.student:
         Navigator.of(context).pushNamed('/student');
         break;
@@ -130,6 +130,9 @@ class _SignUpFormState extends State<SignUpForm> {
         Navigator.of(context).pushNamed('/parent');
         break;
       // }
+      case Role.none:
+        // TODO: Handle this case.
+        break;
     }
   }
 
@@ -143,7 +146,9 @@ class _SignUpFormState extends State<SignUpForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Sign In', style: Theme.of(context).textTheme.headline4),
+            Text('RTI',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline4),
             // Padding(
             //   padding: const EdgeInsets.all(8.0),
             //   child: DropdownButton<Role>(
@@ -188,27 +193,27 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ]),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: TextButton(
-            //     style: ButtonStyle(
-            //       foregroundColor: MaterialStateProperty.resolveWith(
-            //           (Set<MaterialState> states) {
-            //         return states.contains(MaterialState.disabled)
-            //             ? null
-            //             : Colors.white;
-            //       }),
-            //       backgroundColor: MaterialStateProperty.resolveWith(
-            //           (Set<MaterialState> states) {
-            //         return states.contains(MaterialState.disabled)
-            //             ? null
-            //             : Colors.red.shade900;
-            //       }),
-            //     ),
-            //     onPressed: _pushRelevantPage,
-            //     child: const Text('Sign in'),
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.resolveWith(
+                      (Set<MaterialState> states) {
+                    return states.contains(MaterialState.disabled)
+                        ? null
+                        : Colors.white;
+                  }),
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (Set<MaterialState> states) {
+                    return states.contains(MaterialState.disabled)
+                        ? null
+                        : Colors.red.shade900;
+                  }),
+                ),
+                onPressed: _pushRelevantPage,
+                child: const Text('Go'),
+              ),
+            ),
           ],
         ),
       ),

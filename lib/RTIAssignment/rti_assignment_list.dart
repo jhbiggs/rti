@@ -46,7 +46,7 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
           child: Header("Assign a student?"),
         ),
         Padding(

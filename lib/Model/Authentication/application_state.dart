@@ -219,6 +219,7 @@ class ApplicationState extends ChangeNotifier {
 
   void cancelRegistration() {
     _loginState = ApplicationLoginState.emailAddress;
+    UserData.role = Role.none;
     notifyListeners();
   }
 
@@ -240,15 +241,19 @@ class ApplicationState extends ChangeNotifier {
       FirebaseFunctions functions = FirebaseFunctions.instance;
       switch (role) {
         case Role.administrator:
+          UserData.role = Role.administrator;
           HttpsCallable callable = functions.httpsCallable('addAdmin');
           final results = await callable()
               .then((value) => {FirebaseAuth.instance.currentUser!.reload()});
           return;
         case Role.parent:
+          UserData.role = Role.parent;
           break;
         case Role.student:
+          UserData.role = Role.student;
           break;
         case Role.teacher:
+          UserData.role = Role.teacher;
           HttpsCallable callable = functions.httpsCallable('addTeacher');
           final results =
               await callable(<String, dynamic>{'result': 'it worked'});
@@ -259,6 +264,9 @@ class ApplicationState extends ChangeNotifier {
           UserData.subject = subject;
           print("YOur subject is: ${subject.name}");
           // print("did it work you might ask? ${results.data['result']}");
+          break;
+        case Role.none:
+          // TODO: Handle this case.
           break;
       }
     } on FirebaseAuthException catch (e) {

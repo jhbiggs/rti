@@ -48,7 +48,7 @@ class _RTIAssignmentsState extends State<RTIAssignments> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Column(children: [
           Consumer<ApplicationState>(
