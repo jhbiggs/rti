@@ -94,40 +94,41 @@ class _SignUpFormState extends State<SignUpForm> {
   final _passwordTextController = TextEditingController();
   Role dropdownValue = Role.teacher;
 
-  void _updateFormProgress() {
-    final controllers = [
-      _firstNameTextController,
-      _lastNameTextController,
-      _passwordTextController,
-    ];
+  // void _updateFormProgress() {
+  //   final controllers = [
+  //     _firstNameTextController,
+  //     _lastNameTextController,
+  //     _passwordTextController,
+  //   ];
 
-    for (final controller in controllers) {
-      if (controller.value.text.isNotEmpty) {}
-    }
-    setState(() {});
-  }
+  //   for (final controller in controllers) {
+  //     if (controller.value.text.isNotEmpty) {}
+  //   }
+  //   setState(() {});
+  // }
 
-  bool _validInput() {
-    if (_firstNameTextController.text.isNotEmpty &&
-        _lastNameTextController.text.isNotEmpty) {
-      return true;
-    }
-    return false;
-  }
+  // bool _validInput() {
+  //   if (_firstNameTextController.text.isNotEmpty &&
+  //       _lastNameTextController.text.isNotEmpty) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
-  void _pushRelevantPage() {
+  void _pushRelevantPage() async {
+    print("going into userdata switch");
     switch (UserData.role) {
       case Role.student:
-        Navigator.of(context).pushNamed('/student');
+        await Navigator.of(context).pushNamed('/student');
         break;
       case Role.teacher:
-        Navigator.of(context).pushNamed('/teacher');
+        await Navigator.of(context).pushNamed('/teacher');
         break;
       case Role.administrator:
-        Navigator.of(context).pushNamed('/admin');
+        await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.parent:
-        Navigator.of(context).pushNamed('/parent');
+        await Navigator.of(context).pushNamed('/parent');
         break;
       // }
       case Role.none:
@@ -139,7 +140,7 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      onChanged: _updateFormProgress,
+      // onChanged: _updateFormProgress,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -190,6 +191,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   cancelRegistration: appState.cancelRegistration,
                   registerAccount: appState.registerAccount,
                   signOut: appState.signOut,
+                  context: context,
+
+                  //TODO:PUSH relevant page goes here?
                 ),
               ),
             ]),

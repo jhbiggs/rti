@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:js';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -182,11 +183,35 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+//duplicate method, need a way to consolidate into the main method's
+//identical version
+  void _pushRelevantPage(BuildContext context) async {
+    print("going into userdata switch");
+    switch (UserData.role) {
+      case Role.student:
+        await Navigator.of(context).pushNamed('/student');
+        break;
+      case Role.teacher:
+        await Navigator.of(context).pushNamed('/teacher');
+        break;
+      case Role.administrator:
+        await Navigator.of(context).pushNamed('/admin');
+        break;
+      case Role.parent:
+        await Navigator.of(context).pushNamed('/parent');
+        break;
+      // }
+      case Role.none:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
   void signInWithEmailAndPassword(
-    String email,
-    String password,
-    void Function(FirebaseAuthException e) errorCallback,
-  ) async {
+      String email,
+      String password,
+      void Function(FirebaseAuthException e) errorCallback,
+      BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -201,12 +226,16 @@ class ApplicationState extends ChangeNotifier {
             const CaseInsensitiveEquality()
                 .equals(element.name, ((result.claims!['subject'] as String))));
         UserData.role = Role.teacher;
+        print(UserData.role.toString());
+        _pushRelevantPage(context);
       }
       if (result.claims != null &&
           result.claims!['admin'] != null &&
           result.claims!['admin'] == true) {
         UserData.role = Role.administrator;
+        _pushRelevantPage(context);
       }
+
       FirebaseFunctions functions = FirebaseFunctions.instance;
 
       HttpsCallable groupSetupFirestoreFunction =

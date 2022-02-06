@@ -16,17 +16,18 @@ enum ApplicationLoginState {
 }
 
 class Authentication extends StatelessWidget {
-  const Authentication({
-    required this.loginState,
-    required this.email,
-    required this.startLoginFlow,
-    required this.verifyEmail,
-    required this.signInWithEmailAndPassword,
-    required this.cancelRegistration,
-    required this.registerAccount,
-    required this.signOut,
-  });
+  const Authentication(
+      {required this.loginState,
+      required this.email,
+      required this.startLoginFlow,
+      required this.verifyEmail,
+      required this.signInWithEmailAndPassword,
+      required this.cancelRegistration,
+      required this.registerAccount,
+      required this.signOut,
+      required this.context});
 
+  final BuildContext context;
   final ApplicationLoginState loginState;
   final String? email;
   final void Function() startLoginFlow;
@@ -35,10 +36,10 @@ class Authentication extends StatelessWidget {
     void Function(Exception e) error,
   ) verifyEmail;
   final void Function(
-    String email,
-    String password,
-    void Function(Exception e) error,
-  ) signInWithEmailAndPassword;
+      String email,
+      String password,
+      void Function(Exception e) error,
+      BuildContext context) signInWithEmailAndPassword;
   final void Function() cancelRegistration;
   final void Function(
     String email,
@@ -73,12 +74,15 @@ class Authentication extends StatelessWidget {
                 email, (e) => _showErrorDialog(context, 'Invalid email', e)));
       case ApplicationLoginState.password:
         return PasswordForm(
-          email: email!,
-          login: (email, password) {
-            signInWithEmailAndPassword(email, password,
-                (e) => _showErrorDialog(context, 'Failed to sign in', e));
-          },
-        );
+            email: email!,
+            login: (email, password, context) {
+              signInWithEmailAndPassword(
+                  email,
+                  password,
+                  (e) => _showErrorDialog(context, 'Failed to sign in', e),
+                  context);
+            },
+            context: context);
       case ApplicationLoginState.register:
         return RegisterForm(
           email: email!,
@@ -420,12 +424,12 @@ class _RegisterFormState extends State<RegisterForm> {
 }
 
 class PasswordForm extends StatefulWidget {
-  const PasswordForm({
-    required this.login,
-    required this.email,
-  });
+  const PasswordForm(
+      {required this.login, required this.email, required this.context});
   final String email;
-  final void Function(String email, String password) login;
+  final void Function(String email, String password, BuildContext context)
+      login;
+  final BuildContext context;
   @override
   _PasswordFormState createState() => _PasswordFormState();
 }
@@ -439,27 +443,6 @@ class _PasswordFormState extends State<PasswordForm> {
   void initState() {
     super.initState();
     _emailController.text = widget.email;
-  }
-
-  void _pushRelevantPage() {
-    switch (UserData.role) {
-      case Role.student:
-        Navigator.of(context).pushNamed('/student');
-        break;
-      case Role.teacher:
-        Navigator.of(context).pushNamed('/teacher');
-        break;
-      case Role.administrator:
-        Navigator.of(context).pushNamed('/admin');
-        break;
-      case Role.parent:
-        Navigator.of(context).pushNamed('/parent');
-        break;
-      // }
-      case Role.none:
-        // TODO: Handle this case.
-        break;
-    }
   }
 
   @override
@@ -517,8 +500,8 @@ class _PasswordFormState extends State<PasswordForm> {
                             widget.login(
                               _emailController.text,
                               _passwordController.text,
+                              context,
                             );
-                            _pushRelevantPage();
                           }
                         },
                         child: const Text('SIGN IN'),
