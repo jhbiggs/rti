@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { auth } from "firebase-admin";
+import { UserRecord } from "firebase-functions/v1/auth";
 
 admin.initializeApp();
 admin.auth();
@@ -156,55 +157,95 @@ exports.listAllUsers = functions.https.onCall((data, context)=>{
     return returnValue;
 });
 
-exports.setUpGroups = functions.https.onCall(async (data, context) => {
+exports.setUpGroups = functions.firestore.document('assignments/{docId}').onWrite(async (change, context) => {
   //need the RTI assignments with subject name
-
-  //need the teachers with subject name
-  const returnValue = await auth().listUsers(1000);
   
-  var teacherSubjects = returnValue.users.flatMap(
-    eachUser => {
-      if (eachUser.customClaims && eachUser.customClaims['subject'] != null){
-      return eachUser.customClaims!['subject']
-      }
-    })
-    //here's a nifty trick I found that filters out "undefined" objects by 
-    //doing an existence check
-    .filter((item)=> item);
 
-    //get a list of unique subjects within teacherSubjects
-    let subjectSet = new Set();
-    teacherSubjects.forEach(subject => subjectSet.add(subject));
-    teacherSubjects.forEach(subject => console.log(subject));
-    //now create a map with a subject as key and counter as value
-    let subjectCountMap = new Map();
-    //set the initial count to zero on each subject
-    subjectSet.forEach(subject => subjectCountMap.set(subject, 0));
-    //now iterate over subjects
-    teacherSubjects.forEach(subject => {
-      //get the current count on this subject
-      var count = subjectCountMap.get(subject);
-      //increment the count
-      subjectCountMap.set(subject, ++count);
+  let subjectSet = new Set<string>();
+  var teacherSubjects = [];
+  var teachers:UserRecord[] = [];
+  // var teachers = [];
+  //need the teachers with subject name
+  const returnValue = auth().listUsers(1000);
+  returnValue
+    .then((listUsersResult) => {
+      if (listUsersResult.pageToken) {
+        // List next batch of users.
+        // listAllUsers(listUsersResult.pageToken);
+      };
+      teacherSubjects = listUsersResult.users.flatMap(
+        eachUser => {
+          if (eachUser.customClaims 
+            && eachUser.customClaims['subject'] != null){
+          return eachUser.customClaims!['subject']
+          }
+        })
+        //here's a nifty trick I found that filters out "undefined" objects by 
+        //doing an existence check
+        .filter((item)=> item);
+        console.log(`your subjects are ${teacherSubjects}`);
+    
+        //get a list of unique subjects within teacherSubjects
+        teacherSubjects.forEach(subject => {
+          if (!subjectSet.has(subject)){
+            subjectSet.add(subject);
+          }
+        });
+    
+   teachers = listUsersResult.users.filter(thisUser => thisUser.customClaims 
+    && thisUser.customClaims['subject']
+    );
+        subjectSet.forEach(subject => console.log(subject));
+  /*enclose this process in a teacher-cycling block that iterates
+  over the list of teachers with the same subject, assigning one 
+  by one until the list is complete. */
+  subjectSet.forEach(async assSubject => {
+    let teachersForSubject = teachers.filter(teacher => 
+      teacher.customClaims!['subject'] == assSubject as string)
+      .filter(item=>item);
+    let numberOfTeachersForSubject = teachersForSubject.length;
+    teachersForSubject.forEach(teacher=>console.log(`your teacher's subject is
+      ${teacher.customClaims!['subject']}`))
+    var index = 0;
+    console.log(`There are ${numberOfTeachersForSubject} teachers for 
+      ${assSubject}`);
+
+    //get student RTI assignment batch by subject
+      const assignmentsBySubject = (await db.collection('assignments')
+      .get()).docs
+      .filter(document => document.data()['subject'] == assSubject)
+      console.log(`hello ${assSubject}`);
+      assignmentsBySubject.forEach(doc=> {
+        doc.ref.update({
+          teacher: teachersForSubject[index].displayName! as string
+      }).catch(e => console.log(e))
+      index++;
+      if (index == numberOfTeachersForSubject){
+        index = 0;
+      }
+      });
     })
-    console.log(subjectCountMap.values());
+
+}).catch(e=> console.log(e))
+
+    // .catch((error) => {
+    //   console.log('Error listing users:', error);
+    // });
+  
+
+
+    //now create a map with a subject as key and counter as value
+    let subjectMap = new Map();
+    
+    // set the initial map of subjects with an empty array.  The 
+    // array will hold a list of teacher users for each subject.
+    subjectSet.forEach(subject => subjectMap.set(subject, []));
+
+    //now iterate over subjects
 
   //need max number of students per group
   // const maxStudents = 30;
 
-  //get student RTI assignment batch by subject
-  subjectSet.forEach(async assSubject => {
-    const assignmentsBySubject = db.collection('assignmentsBySubject')
-    .doc(assSubject as string)
-    .collection('assignments');
-    console.log(`hello ${assSubject}`);
-    (await assignmentsBySubject.get()).docs.forEach(doc=> {
-      doc.ref.update({
-        subject: assSubject,
-        teacher: "Ms. Z."
-      })
-    })
-    });
   
   
 

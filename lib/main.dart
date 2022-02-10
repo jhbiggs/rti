@@ -189,7 +189,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   signInWithEmailAndPassword:
                       appState.signInWithEmailAndPassword,
                   cancelRegistration: appState.cancelRegistration,
-                  registerAccount: appState.registerAccount,
+                  registerAccount: appState.registerAccountGeneral,
                   signOut: appState.signOut,
                   context: context,
 

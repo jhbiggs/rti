@@ -84,7 +84,7 @@ class Authentication extends StatelessWidget {
             },
             context: context);
       case ApplicationLoginState.register:
-        return RegisterForm(
+        return RegisterFormGeneral(
           email: email!,
           cancel: () {
             cancelRegistration();
@@ -229,8 +229,8 @@ class _EmailFormState extends State<EmailForm> {
   }
 }
 
-class RegisterForm extends StatefulWidget {
-  const RegisterForm({
+class RegisterFormGeneral extends StatefulWidget {
+  const RegisterFormGeneral({
     required this.registerAccount,
     required this.cancel,
     required this.email,
@@ -240,16 +240,17 @@ class RegisterForm extends StatefulWidget {
       Subject subject, String password) registerAccount;
   final void Function() cancel;
   @override
-  _RegisterFormState createState() => _RegisterFormState();
+  _RegisterFormGeneralState createState() => _RegisterFormGeneralState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_RegisterFormState');
   final _emailController = TextEditingController();
   final _displayNameController = TextEditingController();
   final _roleController = TextEditingController();
   Role _dropdownValueRole = Role.parent;
   Subject _dropDownValueSubject = Subject.art;
+  var _isDropdownSubjectVisible = false;
 
   final _passwordController = TextEditingController();
 
@@ -301,21 +302,6 @@ class _RegisterFormState extends State<RegisterForm> {
                     },
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 24),
-                //   child: TextFormField(
-                //     controller: _roleController,
-                //     decoration: const InputDecoration(
-                //       hintText: 'Role',
-                //     ),
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return 'Enter your role with the district';
-                //       }
-                //       return null;
-                //     },
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownButton<Role>(
@@ -330,6 +316,11 @@ class _RegisterFormState extends State<RegisterForm> {
                     onChanged: (Role? newValue) {
                       setState(() {
                         _dropdownValueRole = newValue!;
+                        if (newValue == Role.teacher) {
+                          _isDropdownSubjectVisible = true;
+                        } else {
+                          _isDropdownSubjectVisible = false;
+                        }
                       });
                     },
                     items: <Role>[
@@ -345,31 +336,42 @@ class _RegisterFormState extends State<RegisterForm> {
                     }).toList(),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButton<Subject>(
-                    value: _dropDownValueSubject,
-                    icon: const Icon(Icons.arrow_downward),
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.grey),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.grey,
-                    ),
-                    onChanged: (Subject? newValue) {
-                      setState(() {
-                        _dropDownValueSubject = newValue!;
-                      });
-                    },
-                    items: Subject.values
-                        .map<DropdownMenuItem<Subject>>((Subject value) {
-                      return DropdownMenuItem<Subject>(
-                        value: value,
-                        child: Text(value.name),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                /* we don't want the Subject dropdown menu to be visible if the
+                user is anything but a teacher, so add a boolean to show/hide
+                the menu depending on the user's choice in the role dropdown
+                above. */
+                _isDropdownSubjectVisible
+                    ? Padding(
+                        key: GlobalKey(debugLabel: '_subjectDropdownChooser'),
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton<Subject>(
+                          hint: const Text(
+                            "Subject",
+                            style: TextStyle(inherit: true),
+                          ),
+                          value: _dropDownValueSubject,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.grey),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.grey,
+                          ),
+                          onChanged: (Subject? newValue) {
+                            setState(() {
+                              _dropDownValueSubject = newValue!;
+                            });
+                          },
+                          items: Subject.values
+                              .map<DropdownMenuItem<Subject>>((Subject value) {
+                            return DropdownMenuItem<Subject>(
+                              value: value,
+                              child: Text(value.name),
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    : const SizedBox(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(

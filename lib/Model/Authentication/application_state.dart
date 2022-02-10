@@ -70,7 +70,9 @@ class ApplicationState extends ChangeNotifier {
             // endDate: (document.data()['end_date'] as DateTime),
             standard: document.data()['standard'] as String,
             startDate: DateTime.now(), // (document.data()['start_date']),
-            student: Student(name: document.data()['student_name']),
+            student: Student(
+                name: document.data()['student_name'],
+                accessCode: ''), //TODO:Implement getting access code
             subject: document.data()['subject'] as String,
             teacher: document.data()['name'] as String,
           ));
@@ -89,7 +91,9 @@ class ApplicationState extends ChangeNotifier {
             // endDate: (document.data()['end_date'] as DateTime),
             standard: document.data()['standard'] as String,
             startDate: DateTime.now(), // (document.data()['start_date']),
-            student: Student(name: document.data()['student_name']),
+            student: Student(
+                name: document.data()['student_name'],
+                accessCode: ''), //TODO:Implement getting access code
             subject: document.data()['subject'] as String,
             teacher: document.data()['name'] as String,
           ));
@@ -128,7 +132,9 @@ class ApplicationState extends ChangeNotifier {
               _guestBookMessages.add(
                 RTIAssignment(
                     standard: document.data()['standard'],
-                    student: Student(name: document.data()['student_name']),
+                    student: Student(
+                        name: document.data()['student_name'],
+                        accessCode: ''), //TODO:implement getting access code
                     subject: document.data()['subject'],
                     startDate: DateTime.now()),
               );
@@ -252,7 +258,7 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void registerAccount(
+  void registerAccountGeneral(
       String email,
       String displayName,
       Role role,
