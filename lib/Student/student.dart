@@ -9,7 +9,7 @@ class Student {
   // static final Student _blank = Student(name: "no student");
 
   Map<String, dynamic> toJson() => {'name': _name, 'id': _id};
-  Student({required String name, subject}) {
+  Student({required String name, subject, required String accessCode}) {
     _name = name;
     _id = getRandomString(5);
     // print(_id);

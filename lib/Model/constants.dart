@@ -8,6 +8,7 @@ import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import 'package:rti/Teacher/teacher.dart';
 import 'package:rti/subjects_page.dart';
+import 'package:rti/Model/Authentication/access_code_generator.dart';
 
 import '../Administrator/administrator.dart';
 import 'role.dart';
@@ -18,7 +19,8 @@ class Constants {
   static List<RTIAssignment> assignments = List.generate(
       50,
       (index) => RTIAssignment(
-            student: Student(name: faker.person.name()),
+            student: Student(
+                name: faker.person.name(), accessCode: getRandomString(5)),
             standard: "Factoring Polynomials",
             subject: "math",
             startDate: DateTime.now(),
@@ -51,15 +53,13 @@ class Constants {
 
   static List<Student> studentTestList = List.generate(
       50,
-      (index) => Student(
-            name: faker.person.name(),
-          ));
+      (index) =>
+          Student(name: faker.person.name(), accessCode: getRandomString(5)));
 
   static List<Student> studentTestList2 = List.generate(
       50,
-      (index) => Student(
-            name: faker.person.name(),
-          ));
+      (index) =>
+          Student(name: faker.person.name(), accessCode: getRandomString(5)));
 
   static int getClassCountDefault() {
     return _classCountDefault;
