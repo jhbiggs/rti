@@ -15,7 +15,10 @@ class RTIAssignment {
   static final RTIAssignment _blank = RTIAssignment(
       startDate: DateTime.now(),
       standard: "none",
-      student: Student(name: "none"),
+      student: Student(
+        name: "none",
+        accessCode: '',
+      ), //TODO:Implement access Code
       subject: "none",
       teacher: "none");
 

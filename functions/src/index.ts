@@ -5,7 +5,7 @@ import { UserRecord } from "firebase-functions/v1/auth";
 
 admin.initializeApp();
 admin.auth();
-const db = admin.firestore();
+// const db = admin.firestore();
 
 // exports.myFunction = functions.firestore
 //   .document('assignments/{docId}')
@@ -135,6 +135,7 @@ async function grantSubject(user:admin.auth.UserRecord, subject:string) {
   return admin.auth().setCustomUserClaims(user.uid, {
     subject: subject,
     teacher: true,
+    studentCount: 0,
   });
 }
 
@@ -157,107 +158,41 @@ exports.listAllUsers = functions.https.onCall((data, context)=>{
     return returnValue;
 });
 
-exports.setUpGroups = functions.firestore.document('assignments/{docId}').onWrite(async (change, context) => {
+exports.setUpGroups = functions.firestore.document('assignments/{docId}').onCreate(async (change, context) => {
   //need the RTI assignments with subject name
   
 
   let subjectSet = new Set<string>();
-  var teacherSubjects = [];
+  // var teacherSubjects = [];
   var teachers:UserRecord[] = [];
   // var teachers = [];
   //need the teachers with subject name
   const returnValue = auth().listUsers(1000);
-  returnValue
-    .then((listUsersResult) => {
-      if (listUsersResult.pageToken) {
-        // List next batch of users.
-        // listAllUsers(listUsersResult.pageToken);
-      };
-      teacherSubjects = listUsersResult.users.flatMap(
-        eachUser => {
-          if (eachUser.customClaims 
-            && eachUser.customClaims['subject'] != null){
-          return eachUser.customClaims!['subject']
-          }
-        })
-        //here's a nifty trick I found that filters out "undefined" objects by 
-        //doing an existence check
-        .filter((item)=> item);
-        console.log(`your subjects are ${teacherSubjects}`);
-    
-        //get a list of unique subjects within teacherSubjects
-        teacherSubjects.forEach(subject => {
-          if (!subjectSet.has(subject)){
-            subjectSet.add(subject);
-          }
-        });
-    
-   teachers = listUsersResult.users.filter(thisUser => thisUser.customClaims 
-    && thisUser.customClaims['subject']
+         /* find the next teacher with this subject with the fewest number of students
+        and assign this student to the teacher.*/
+        
+        console.log('going into teacher assignment')
+        let studentSubject = change.data()['subject'];
+   teachers =  (await returnValue).users.filter(thisUser => thisUser.customClaims 
+    && thisUser.customClaims['subject'] != null && thisUser.customClaims['subject']==studentSubject
     );
-        subjectSet.forEach(subject => console.log(subject));
-  /*enclose this process in a teacher-cycling block that iterates
-  over the list of teachers with the same subject, assigning one 
-  by one until the list is complete. */
-  subjectSet.forEach(async assSubject => {
-    let teachersForSubject = teachers.filter(teacher => 
-      teacher.customClaims!['subject'] == assSubject as string)
-      .filter(item=>item);
-    let numberOfTeachersForSubject = teachersForSubject.length;
-    teachersForSubject.forEach(teacher=>console.log(`your teacher's subject is
-      ${teacher.customClaims!['subject']}`))
-    var index = 0;
-    console.log(`There are ${numberOfTeachersForSubject} teachers for 
-      ${assSubject}`);
+    teachers.sort((userA, userB) => userA.customClaims!['studentCount'] - userB.customClaims!['studentCount'])
+        // subjectSet.forEach(subject => console.log(subject));
 
-    //get student RTI assignment batch by subject
-      const assignmentsBySubject = (await db.collection('assignments')
-      .get()).docs
-      .filter(document => document.data()['subject'] == assSubject)
-      console.log(`hello ${assSubject}`);
-      assignmentsBySubject.forEach(doc=> {
-        doc.ref.update({
-          teacher: teachersForSubject[index].displayName! as string
-      }).catch(e => console.log(e))
-      index++;
-      if (index == numberOfTeachersForSubject){
-        index = 0;
-      }
-      });
-    })
+        if (teachers[0] != null){
+          console.log(`teacher is ${teachers[0].displayName!}`)
+          if (change.data()['teacher'] == null){
+            change.ref.update({
+              teacher: teachers[0].displayName! as string
+              }).catch(e => console.log(e))
+            }
+        /*increment the teacher student count custom claim*/
+        teachers[0].customClaims!['studentCount']++;
+        } else {
+          console.log('sorry, there is no teacher with that subject for the assignment')
+        }
 
-}).catch(e=> console.log(e))
-
-    // .catch((error) => {
-    //   console.log('Error listing users:', error);
-    // });
-  
-
-
-    //now create a map with a subject as key and counter as value
-    let subjectMap = new Map();
-    
-    // set the initial map of subjects with an empty array.  The 
-    // array will hold a list of teacher users for each subject.
-    subjectSet.forEach(subject => subjectMap.set(subject, []));
-
-    //now iterate over subjects
-
-  //need max number of students per group
-  // const maxStudents = 30;
-
-  
-  
-
-
-  //dole out students to each group one at a time,
-  // to each teacher like dealing cards
-
-  //first get the individual subject collections
-  
-  //stop dealing when limit is reached per teacher and
-  //do something (a toast?) to let someone
-  //know there was a failure
+       
 
 });
 //TODO: add function to allow admin to set max number of students per group
