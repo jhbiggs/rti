@@ -51,6 +51,7 @@ dependencies:
   cloud_functions: ^3.2.5
   collection: ^1.15.0
   integration_test: ^0.8.1
+  file_picker: ^4.4.0
 
 dev_dependencies:
   flutter_test:

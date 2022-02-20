@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rti/Model/subject.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
+import 'package:rti/Teacher/teacher.dart';
 import '../Model/Authentication/application_state.dart';
 import '../Model/Authentication/authentication.dart';
 import '../Model/constants.dart';
-import 'rti_assignment_list.dart';
+import '../RTIAssignment/rti_assignment_list.dart';
 
-class RTIAssignmentsScreen extends StatelessWidget {
-  const RTIAssignmentsScreen({Key? key}) : super(key: key);
+class AdminTeacherRosterScreen extends StatelessWidget {
+  static const routeName = '/teacher_roster';
+
+  const AdminTeacherRosterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Teacher;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Student RTI Assignments'),
+        title: Text('${args.name} Assignments'),
       ),
       backgroundColor: Colors.grey[200],
-      body: const Center(
+      body: Center(
         child: SizedBox(
           width: 400,
           child: Card(
-            child: RTIAssignments(),
+            child: AdminTeacherRoster(teacher: args),
           ),
         ),
       ),
@@ -29,14 +33,16 @@ class RTIAssignmentsScreen extends StatelessWidget {
   }
 }
 
-class RTIAssignments extends StatefulWidget {
-  const RTIAssignments({Key? key}) : super(key: key);
+class AdminTeacherRoster extends StatefulWidget {
+  late Teacher teacher;
+
+  AdminTeacherRoster({Key? key, required this.teacher}) : super(key: key);
 
   @override
-  _RTIAssignmentsState createState() => _RTIAssignmentsState();
+  _AdminTeacherRosterState createState() => _AdminTeacherRosterState();
 }
 
-class _RTIAssignmentsState extends State<RTIAssignments> {
+class _AdminTeacherRosterState extends State<AdminTeacherRoster> {
   late List<RTIAssignment> assignmentsInConstants;
 
   @override
@@ -52,7 +58,10 @@ class _RTIAssignmentsState extends State<RTIAssignments> {
                   RtIAssignmentList(
                     addAssignment: (assignment) =>
                         appState.addAssignmentToList(assignment),
-                    assignments: appState.guestBookMessages,
+                    assignments: appState.guestBookMessages
+                        .where(
+                            (element) => element.teacher == widget.teacher.name)
+                        .toList(),
                   ),
                   Center(
                       child: ListView.builder(

@@ -32,7 +32,8 @@ class _AdminFormState extends State<AdminForm> {
     ['Teachers', '/teachers'],
     ['Subjects', '/subjects'],
     ['Students', '/students'],
-    ['RTI Assignments', '/rti_assignments']
+    ['RTI Assignments', '/rti_assignments'],
+    ['Choose your source...', '/file_picker']
   ];
   void _goToPage(String page) {
     Navigator.of(context).pushNamed(page);

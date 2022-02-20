@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rti/Administrator/admin_teacher_roster_page.dart';
+import 'package:rti/Model/file_picker_demo.dart';
 import 'package:rti/Parent/parent.dart';
 import 'package:rti/Parent/parent_page.dart';
 import 'package:rti/role_page.dart';
@@ -45,6 +47,8 @@ class SignUpApp extends StatelessWidget {
         '/teachers': (context) => const TeachersScreen(),
         '/subjects': (context) => const SubjectsScreen(),
         '/rti_assignments': (context) => const RTIAssignmentsScreen(),
+        '/teacher_roster': (context) => const AdminTeacherRosterScreen(),
+        '/file_picker': (context) => FilePickerDemo()
       },
     );
   }
@@ -94,27 +98,6 @@ class _SignUpFormState extends State<SignUpForm> {
   final _passwordTextController = TextEditingController();
   Role dropdownValue = Role.teacher;
 
-  // void _updateFormProgress() {
-  //   final controllers = [
-  //     _firstNameTextController,
-  //     _lastNameTextController,
-  //     _passwordTextController,
-  //   ];
-
-  //   for (final controller in controllers) {
-  //     if (controller.value.text.isNotEmpty) {}
-  //   }
-  //   setState(() {});
-  // }
-
-  // bool _validInput() {
-  //   if (_firstNameTextController.text.isNotEmpty &&
-  //       _lastNameTextController.text.isNotEmpty) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   void _pushRelevantPage() async {
     print("going into userdata switch");
     switch (UserData.role) {
@@ -150,35 +133,6 @@ class _SignUpFormState extends State<SignUpForm> {
             Text('RTI',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline4),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: DropdownButton<Role>(
-            //     value: dropdownValue,
-            //     icon: const Icon(Icons.arrow_downward),
-            //     elevation: 16,
-            //     style: const TextStyle(color: Colors.grey),
-            //     underline: Container(
-            //       height: 2,
-            //       color: Colors.grey,
-            //     ),
-            //     onChanged: (Role? newValue) {
-            //       setState(() {
-            //         dropdownValue = newValue!;
-            //       });
-            //     },
-            //     items: <Role>[
-            //       Role.administrator,
-            //       Role.parent,
-            //       Role.teacher,
-            //       Role.student
-            //     ].map<DropdownMenuItem<Role>>((Role value) {
-            //       return DropdownMenuItem<Role>(
-            //         value: value,
-            //         child: Text(value.name.toUpperCase()),
-            //       );
-            //     }).toList(),
-            //   ),
-            // ),
             Column(children: [
               Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(
@@ -192,8 +146,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   registerAccount: appState.registerAccountGeneral,
                   signOut: appState.signOut,
                   context: context,
-
-                  //TODO:PUSH relevant page goes here?
                 ),
               ),
             ]),

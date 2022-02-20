@@ -18,6 +18,7 @@ import 'package:collection/collection.dart';
 
 class ApplicationState extends ChangeNotifier {
   var isTeacher = false;
+  var isAdmin = false;
 
   ApplicationState() {
     init();
@@ -74,7 +75,7 @@ class ApplicationState extends ChangeNotifier {
                 name: document.data()['student_name'],
                 accessCode: ''), //TODO:Implement getting access code
             subject: document.data()['subject'] as String,
-            teacher: document.data()['name'] as String,
+            teacher: document.data()['teacher'] as String,
           ));
         }
       });
@@ -95,7 +96,7 @@ class ApplicationState extends ChangeNotifier {
                 name: document.data()['student_name'],
                 accessCode: ''), //TODO:Implement getting access code
             subject: document.data()['subject'] as String,
-            teacher: document.data()['name'] as String,
+            teacher: document.data()['teacher'] as String,
           ));
         }
       });
@@ -116,7 +117,8 @@ class ApplicationState extends ChangeNotifier {
               if (result.claims != null)
                 {
                   isTeacher = result.claims!['teacher'] ?? false,
-                  teacherSubject = result.claims!['subject'] ?? 'no subject'
+                  teacherSubject = result.claims!['subject'] ?? 'no subject',
+                  isAdmin = result.claims!['admin'] ?? false,
                 }
             });
         _loginState = ApplicationLoginState.loggedIn;
@@ -136,11 +138,33 @@ class ApplicationState extends ChangeNotifier {
                         name: document.data()['student_name'],
                         accessCode: ''), //TODO:implement getting access code
                     subject: document.data()['subject'],
+                    teacher: document.data()['teacher'],
                     startDate: DateTime.now()),
               );
             }
-
-            // _getMessages(resultForClaims);
+            notifyListeners();
+          });
+        }
+        if (isAdmin) {
+          //get the list of all assignments
+          _guestBookSubscription = FirebaseFirestore.instance
+              .collection('assignments')
+              .orderBy('timestamp', descending: true)
+              .snapshots()
+              .listen((snapshot) {
+            _guestBookMessages = [];
+            for (final document in snapshot.docs) {
+              _guestBookMessages.add(
+                RTIAssignment(
+                    standard: document.data()['standard'],
+                    student: Student(
+                        name: document.data()['student_name'],
+                        accessCode: ''), //TODO:implement getting access code
+                    subject: document.data()['subject'],
+                    teacher: document.data()['teacher'],
+                    startDate: DateTime.now()),
+              );
+            }
             notifyListeners();
           });
         }
@@ -192,7 +216,7 @@ class ApplicationState extends ChangeNotifier {
 //duplicate method, need a way to consolidate into the main method's
 //identical version
   void _pushRelevantPage(BuildContext context) async {
-    print("going into userdata switch");
+    print("going into application state userdata switch");
     switch (UserData.role) {
       case Role.student:
         await Navigator.of(context).pushNamed('/student');
@@ -241,12 +265,6 @@ class ApplicationState extends ChangeNotifier {
         UserData.role = Role.administrator;
         _pushRelevantPage(context);
       }
-
-      FirebaseFunctions functions = FirebaseFunctions.instance;
-
-      HttpsCallable groupSetupFirestoreFunction =
-          functions.httpsCallable('setUpGroups');
-      await groupSetupFirestoreFunction();
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
