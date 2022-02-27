@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
 import '../Model/Authentication/application_state.dart';
 import '../Model/Authentication/authentication.dart';
 import '../Model/constants.dart';

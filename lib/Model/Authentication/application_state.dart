@@ -8,11 +8,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rti/Firebase/firebase_options.dart';
+import 'package:rti/Model/form_controller.dart';
 import 'package:rti/Model/role.dart';
 import 'package:rti/Model/subject.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import '../constants.dart';
+import '../student_form.dart';
 import 'authentication.dart';
 import 'package:collection/collection.dart';
 
@@ -48,62 +50,11 @@ class ApplicationState extends ChangeNotifier {
     FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
   }
 
-  void _getMessages(Future<IdTokenResult> tokenResult) async {
-    String teacherSubject = "";
-    await tokenResult.then((result) => {
-          if (result.claims != null)
-            {
-              isTeacher = result.claims!['teacher'] ?? false,
-              teacherSubject = result.claims!['subject'] ?? 'no subject'
-            }
-        });
-    if (isTeacher) {
-      _guestBookSubscription = FirebaseFirestore.instance
-          .collection('assignments')
-          .where('subject', isEqualTo: teacherSubject)
-          .orderBy('start_date', descending: true)
-          // .limit(30)
-          .snapshots()
-          .listen((snapshot) {
-        _guestBookMessages = [];
-        for (final document in snapshot.docs) {
-          _guestBookMessages.add(RTIAssignment(
-            // endDate: (document.data()['end_date'] as DateTime),
-            standard: document.data()['standard'] as String,
-            startDate: DateTime.now(), // (document.data()['start_date']),
-            student: Student(
-                name: document.data()['student_name'],
-                accessCode: ''), //TODO:Implement getting access code
-            subject: document.data()['subject'] as String,
-            teacher: document.data()['teacher'] as String,
-          ));
-        }
-      });
-    } else {
-      _guestBookSubscription = FirebaseFirestore.instance
-          .collection('assignments')
-          .orderBy('start_date', descending: true)
-          // .limit(30)
-          .snapshots()
-          .listen((snapshot) {
-        _guestBookMessages = [];
-        for (final document in snapshot.docs) {
-          _guestBookMessages.add(RTIAssignment(
-            // endDate: (document.data()['end_date'] as DateTime),
-            standard: document.data()['standard'] as String,
-            startDate: DateTime.now(), // (document.data()['start_date']),
-            student: Student(
-                name: document.data()['student_name'],
-                accessCode: ''), //TODO:Implement getting access code
-            subject: document.data()['subject'] as String,
-            teacher: document.data()['teacher'] as String,
-          ));
-        }
-      });
-    }
-  }
-
+  List<StudentForm> _students = [];
   Future<void> init() async {
+    FormController()
+        .getStudentList()
+        .then((students) => {_students = students});
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
