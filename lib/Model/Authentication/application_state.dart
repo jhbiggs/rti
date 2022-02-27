@@ -50,16 +50,13 @@ class ApplicationState extends ChangeNotifier {
     FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
   }
 
+// here is where the Google sheets transfer happens
   List<StudentForm> _students = [];
   Future<void> init() async {
-    FormController()
-        .getStudentList()
-        .then((students) => {_students = students});
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     _connectToFirebaseEmulator();
-
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         var resultForClaims = user.getIdTokenResult();
@@ -73,6 +70,29 @@ class ApplicationState extends ChangeNotifier {
                 }
             });
         _loginState = ApplicationLoginState.loggedIn;
+        FormController().getStudentList().then((students) => {
+              _students = students,
+              for (StudentForm student in _students)
+                {
+                  print(student.name),
+
+                  FirebaseFirestore.instance
+                      .collection('assignments')
+                      .add(<String, dynamic>{
+                    'teacher': student.teacher,
+                    'standard': student.standard,
+                    'subject': student.subject,
+                    'student_name': student.name,
+                    'start_date': DateTime.now().millisecondsSinceEpoch,
+                    'end_date': DateTime.now().add(const Duration(days: 14)),
+                    'timestamp': DateTime.now().millisecondsSinceEpoch,
+                    'name': FirebaseAuth.instance.currentUser!.displayName,
+                    'userId': FirebaseAuth.instance.currentUser!.uid
+                  })
+                  //TODO: load the Google Sheets rows into the Firebase table
+                }
+            });
+
         if (isTeacher) {
           _guestBookSubscription = FirebaseFirestore.instance
               .collection('assignments')

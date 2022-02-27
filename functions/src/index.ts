@@ -7,53 +7,6 @@ admin.initializeApp();
 admin.auth();
 // const db = admin.firestore();
 
-// exports.myFunction = functions.firestore
-//   .document('assignments/{docId}')
-//   .onWrite(async (change, context) => {
-
-//     // The subjects array needs scope here 
-//     // upon which to build collections later.
-//     var subjects: string[] = []; 
-//     // var queryValues: string[] = [];
-
-//     //get the assignments ordered by subject, then
-//     //add distinct subject headings to an array for processing
-//     await db.collection('assignments').orderBy('subject').get().then(
-//       value => {
-        
-//         value.docs.forEach(doc =>{
-//           const thisSubject = doc.data()['subject'];
-//           //we're looking for distinct subjects on which to build sub-collections
-//           if (!subjects.includes(thisSubject)){
-//             subjects.push(thisSubject);
-//           };
-          
-//       });
-//       console.log(subjects);
-//     });
-//     for (var subject of subjects){
-
-//       await db.collection('assignmentsBySubject').doc(subject).delete();
-//       var batch = db.batch();
-//       await db.collection('assignments').where('subject', '==', subject)
-//       .get()
-//       .then(queryDoc => {
-//         queryDoc.docs.forEach(assignment => {
-//           var docRef = db.collection("assignmentsBySubject")
-//           .doc(subject)
-//           .collection('assignments')
-//           .doc(); //automatically generate unique id
-//           batch.set(docRef, assignment.data());
-//           });
-//           batch.commit();
-//         })
-//         .catch(e => console.log(e));
-
-      
-//         };
-//     });
-
-  
 // add administrator function
 exports.addAdmin = functions.https.onCall((data, context) => {
   admin.auth().setCustomUserClaims((context.auth!.uid), {admin: true});
@@ -162,7 +115,7 @@ exports.setUpGroups = functions.firestore.document('assignments/{docId}').onCrea
   //need the RTI assignments with subject name
   
 
-  let subjectSet = new Set<string>();
+  // let subjectSet = new Set<string>();
   // var teacherSubjects = [];
   var teachers:UserRecord[] = [];
   // var teachers = [];
@@ -181,7 +134,7 @@ exports.setUpGroups = functions.firestore.document('assignments/{docId}').onCrea
 
         if (teachers[0] != null){
           console.log(`teacher is ${teachers[0].displayName!}`)
-          if (change.data()['teacher'] == null){
+          if (change.data()['teacher'] == null || change.data()['teacher'] == "null"){
             change.ref.update({
               teacher: teachers[0].displayName! as string
               }).catch(e => console.log(e))
