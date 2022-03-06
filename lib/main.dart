@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rti/Administrator/StudentAssignmentScreen.dart';
 import 'package:rti/Administrator/admin_teacher_roster_page.dart';
 import 'package:rti/Model/file_picker_demo.dart';
 import 'package:rti/Parent/parent.dart';
@@ -47,7 +48,10 @@ class SignUpApp extends StatelessWidget {
         '/teachers': (context) => const TeachersScreen(),
         '/subjects': (context) => const SubjectsScreen(),
         '/rti_assignments': (context) => const RTIAssignmentsScreen(),
-        '/teacher_roster': (context) => const AdminTeacherRosterScreen(),
+        AdminTeacherRosterScreen.routeName: (context) =>
+            const AdminTeacherRosterScreen(),
+        StudentAssignmentScreen.routeName: ((context) =>
+            const StudentAssignmentScreen()),
         '/file_picker': (context) => FilePickerDemo()
       },
     );

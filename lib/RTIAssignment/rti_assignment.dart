@@ -11,6 +11,7 @@ class RTIAssignment {
   final String? subject;
   late Group group;
   late String? teacher;
+  final String assignmentName;
 
   static final RTIAssignment _blank = RTIAssignment(
       startDate: DateTime.now(),
@@ -20,7 +21,8 @@ class RTIAssignment {
         accessCode: '',
       ), //TODO:Implement access Code
       subject: "none",
-      teacher: "none");
+      teacher: "none",
+      assignmentName: "no assignment yet!");
 
   static RTIAssignment getBlank() {
     return _blank;
@@ -31,6 +33,7 @@ class RTIAssignment {
       required this.student,
       required this.subject,
       required this.startDate,
+      required this.assignmentName,
       this.endDate,
       this.teacher}) {
     if (this.endDate == null) {

@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:js';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:rti/Firebase/firebase_options.dart';
-import 'package:rti/Model/form_controller.dart';
+import 'package:rti/firebase_options.dart';
 import 'package:rti/Model/role.dart';
 import 'package:rti/Model/subject.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
@@ -17,21 +14,30 @@ import '../constants.dart';
 import '../student_form.dart';
 import 'authentication.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class ApplicationState extends ChangeNotifier {
   var isTeacher = false;
   var isAdmin = false;
 
+  /* we need to switch sometimes from Firestore to the Realtime Database.
+  At this time I don't see a good way to sync Google Sheets with the 
+  Firestore.  If that changes we can certainly go back to the Firestore 
+  as it is a little more user-friendly imho. */
+
   ApplicationState() {
     init();
   }
-  Future<DocumentReference> addAssignmentToList(RTIAssignment assignment) {
+  Future<void> addAssignmentToList(RTIAssignment assignment) {
+    final db = FirebaseDatabase.instance
+        .ref('chesterton/assignments/'); // FireabaseFirestore.instance
+
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
     }
-    return FirebaseFirestore.instance
-        .collection('assignments')
-        .add(<String, dynamic>{
+    return db
+        // .collection('assignments') // only need it in Firestore
+        .set({
       'teacher': assignment.teacher,
       'standard': assignment.standard,
       'subject': assignment.subject,
@@ -44,11 +50,11 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  void _connectToFirebaseEmulator() {
-    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
-    FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
-    FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
-  }
+  // void _connectToFirebaseEmulator() {
+  //   FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+  //   FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
+  //   FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
+  // }
 
 // here is where the Google sheets transfer happens
   List<StudentForm> _students = [];
@@ -56,7 +62,7 @@ class ApplicationState extends ChangeNotifier {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    _connectToFirebaseEmulator();
+    // _connectToFirebaseEmulator();
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         var resultForClaims = user.getIdTokenResult();
@@ -70,75 +76,56 @@ class ApplicationState extends ChangeNotifier {
                 }
             });
         _loginState = ApplicationLoginState.loggedIn;
-        FormController().getStudentList().then((students) => {
-              _students = students,
-              for (StudentForm student in _students)
-                {
-                  print(student.name),
-
-                  FirebaseFirestore.instance
-                      .collection('assignments')
-                      .add(<String, dynamic>{
-                    'teacher': student.teacher,
-                    'standard': student.standard,
-                    'subject': student.subject,
-                    'student_name': student.name,
-                    'start_date': DateTime.now().millisecondsSinceEpoch,
-                    'end_date': DateTime.now().add(const Duration(days: 14)),
-                    'timestamp': DateTime.now().millisecondsSinceEpoch,
-                    'name': FirebaseAuth.instance.currentUser!.displayName,
-                    'userId': FirebaseAuth.instance.currentUser!.uid
-                  })
-                  //TODO: load the Google Sheets rows into the Firebase table
-                }
-            });
-
+        final db = FirebaseDatabase.instance
+            .ref('1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1');
         if (isTeacher) {
-          _guestBookSubscription = FirebaseFirestore.instance
-              .collection('assignments')
-              .where('subject', isEqualTo: teacherSubject)
-              .orderBy('timestamp', descending: true)
-              .snapshots()
-              .listen((snapshot) {
+          _guestBookSubscription = db.onValue //FirebaseFirestore.instance
+              // .collection('assignments')
+              // .where('subject', isEqualTo: teacherSubject)
+              // .orderBy('timestamp', descending: true)
+              // .snapshots()
+              .listen((event) {
             _guestBookMessages = [];
-            for (final document in snapshot.docs) {
+            for (final document in event.snapshot.children) {
               _guestBookMessages.add(
                 RTIAssignment(
-                    standard: document.data()['standard'],
+                    assignmentName:
+                        document.child('assignment').value.toString(),
+                    standard: document.child('standard').value.toString(),
                     student: Student(
-                        name: document.data()['student_name'],
+                        name: document.child('student_name').value.toString(),
                         accessCode: ''), //TODO:implement getting access code
-                    subject: document.data()['subject'],
-                    teacher: document.data()['teacher'],
+                    subject: document.child('subject').value.toString(),
+                    teacher: document.child('teacher').value.toString(),
                     startDate: DateTime.now()),
               );
             }
             notifyListeners();
           });
         }
-        if (isAdmin) {
-          //get the list of all assignments
-          _guestBookSubscription = FirebaseFirestore.instance
-              .collection('assignments')
-              .orderBy('timestamp', descending: true)
-              .snapshots()
-              .listen((snapshot) {
-            _guestBookMessages = [];
-            for (final document in snapshot.docs) {
-              _guestBookMessages.add(
-                RTIAssignment(
-                    standard: document.data()['standard'],
-                    student: Student(
-                        name: document.data()['student_name'],
-                        accessCode: ''), //TODO:implement getting access code
-                    subject: document.data()['subject'],
-                    teacher: document.data()['teacher'],
-                    startDate: DateTime.now()),
-              );
-            }
-            notifyListeners();
-          });
-        }
+        // if (isAdmin) {
+        //   //get the list of all assignments
+        //   _guestBookSubscription = FirebaseFirestore.instance
+        //       .collection('assignments')
+        //       .orderBy('timestamp', descending: true)
+        //       .snapshots()
+        //       .listen((snapshot) {
+        //     _guestBookMessages = [];
+        //     for (final document in snapshot.docs) {
+        //       _guestBookMessages.add(
+        //         RTIAssignment(
+        //             standard: document.data()['standard'],
+        //             student: Student(
+        //                 name: document.data()['student_name'],
+        //                 accessCode: ''), //TODO:implement getting access code
+        //             subject: document.data()['subject'],
+        //             teacher: document.data()['teacher'],
+        //             startDate: DateTime.now()),
+        //       );
+        //     }
+        //     notifyListeners();
+        //   });
+        // }
       } else {
         _loginState = ApplicationLoginState.loggedOut;
         // Add from here
@@ -156,7 +143,7 @@ class ApplicationState extends ChangeNotifier {
   String? _email;
   String? get email => _email;
 
-  StreamSubscription<QuerySnapshot>? _guestBookSubscription;
+  StreamSubscription<DatabaseEvent>? _guestBookSubscription;
   List<RTIAssignment> _guestBookMessages = [];
   List<RTIAssignment> get guestBookMessages => _guestBookMessages;
 

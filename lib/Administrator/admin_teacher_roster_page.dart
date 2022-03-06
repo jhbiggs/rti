@@ -9,7 +9,8 @@ import '../Model/constants.dart';
 import '../RTIAssignment/rti_assignment_list.dart';
 
 class AdminTeacherRosterScreen extends StatelessWidget {
-  static const routeName = '/teacher_roster';
+  static const _routeName = '/teacher_roster';
+  static String get routeName => _routeName;
 
   const AdminTeacherRosterScreen({Key? key}) : super(key: key);
 

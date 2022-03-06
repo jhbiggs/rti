@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/widgets.dart';
 
+import '../Administrator/StudentAssignmentScreen.dart';
 import '../Student/student.dart';
 import '../Model/constants.dart';
 
@@ -35,10 +36,22 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
   final _standardTextController = TextEditingController();
   final _nameBoxController = BoxController();
   final _nameTextController = TextEditingController();
+  final _assignmentTextController = TextEditingController();
   final _studentSuggestions = Constants.studentTestList;
   final _subjectBoxController = BoxController();
   final _subjectSuggestions = Constants.subjects;
   late Student _selectedStudent;
+
+  void _pushStudentAssignmentPage(RTIAssignment assignment) {
+    /* The student assignment page shows the assignment from the Google
+    Sheet.  Currently the column heading on the Google sheet is "missing 
+    assignment" and the field contains a description or a link to another 
+    Google Doc assignment. The relevant information is contained within
+    the RTIAssignment object. */
+
+    Navigator.pushNamed(context, StudentAssignmentScreen.routeName,
+        arguments: assignment);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,48 +62,65 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
           padding: EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
           child: Header("Assign a student?"),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        Row(
+          children: [
+            Expanded(
+              child: StyledButton(
+                  child: Row(children: [
+                    Expanded(
+                      child: FieldSuggestion(
+                        wSlideAnimation: true,
+                        fieldDecoration: const InputDecoration(
+                          hintText: 'Subject', // optional
+                        ),
+                        boxController: _subjectBoxController,
+                        textController: _subjectTextController,
+                        suggestionList: _subjectSuggestions,
+                        itemStyle: const SuggestionItemStyle(
+                          backgroundColor: Color(0xff000000),
+                          leading: Icon(Icons.person),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: Offset(0, 2),
+                              color: Colors.blueAccent,
+                            ),
+                          ],
+                        ),
+                        onItemSelected: (value) {
+                          print(value);
+                        },
+                      ),
+                    ),
+                  ]),
+                  onPressed: () {}),
+            ),
+            Expanded(
+                child: TextFormField(
+              controller: _standardTextController,
+              decoration: const InputDecoration(
+                hintText: 'Standard',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'enter your message and continue';
+                }
+                return null;
+              },
+            )),
+          ],
+        ),
+        StyledButton(
+          onPressed: () {},
           child: Row(
             children: [
               Expanded(
-                child: StyledButton(
-                    child: Row(children: [
-                      Expanded(
-                        child: FieldSuggestion(
-                          wSlideAnimation: true,
-                          fieldDecoration: const InputDecoration(
-                            hintText: 'Subject', // optional
-                          ),
-                          boxController: _subjectBoxController,
-                          textController: _subjectTextController,
-                          suggestionList: _subjectSuggestions,
-                          itemStyle: const SuggestionItemStyle(
-                            backgroundColor: Color(0xff000000),
-                            leading: Icon(Icons.person),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 1,
-                                spreadRadius: 1,
-                                offset: Offset(0, 2),
-                                color: Colors.blueAccent,
-                              ),
-                            ],
-                          ),
-                          onItemSelected: (value) {
-                            print(value);
-                          },
-                        ),
-                      ),
-                    ]),
-                    onPressed: () {}),
-              ),
-              Expanded(
                   child: TextFormField(
-                controller: _standardTextController,
+                controller: _assignmentTextController,
                 decoration: const InputDecoration(
-                  hintText: 'standard',
+                  hintText: 'Assignment',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -160,10 +190,12 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
                   student: _selectedStudent,
                   subject: _subjectTextController.text,
                   standard: _standardTextController.text,
+                  assignmentName: _assignmentTextController.text,
                   startDate: DateTime.now()));
               _subjectTextController.clear();
               _nameTextController.clear();
               _standardTextController.clear();
+              _assignmentTextController.clear();
             }),
         const Padding(
           padding: EdgeInsets.all(8.0),
@@ -175,14 +207,18 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
             itemBuilder: (context, index) => Card(
                   elevation: 5,
                   child: ListTile(
+                    isThreeLine: true,
                     title: Text(
                         '${widget.assignments.elementAt(index).student.getName()} needs help in '
                         ' ${widget.assignments.elementAt(index).subject} with '
                         '${widget.assignments.elementAt(index).standard}'),
                     subtitle: Text(
-                        'from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
+                        'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
                         'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
-                    onTap: () {},
+                    onTap: () {
+                      _pushStudentAssignmentPage(
+                          widget.assignments.elementAt(index));
+                    },
                   ),
                 )),
       ],

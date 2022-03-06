@@ -19,13 +19,13 @@ class Constants {
   static List<RTIAssignment> assignments = List.generate(
       50,
       (index) => RTIAssignment(
-            student: Student(
-                name: faker.person.name(), accessCode: getRandomString(5)),
-            standard: "Factoring Polynomials",
-            subject: "math",
-            startDate: DateTime.now(),
-            teacher: "Mrs. Highsmith",
-          ));
+          student: Student(
+              name: faker.person.name(), accessCode: getRandomString(5)),
+          standard: "Factoring Polynomials",
+          subject: "math",
+          startDate: DateTime.now(),
+          teacher: "Mrs. Highsmith",
+          assignmentName: "Problem Set A"));
   static List<Parent> parents =
       List.generate(30, (index) => Parent(name: faker.person.name()));
   static var subjects = Subject.values.map((e) => e.name).toList();
