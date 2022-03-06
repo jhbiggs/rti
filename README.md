@@ -1,10 +1,10 @@
 # rti
 
-A new Flutter project.
+An application to support public education administrators when they assign students to their RTI program.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a starting point for a Flutter application.  It is multi-platform and includes iOS, Android and the web.  There is currently no web hosting available.
 
 A few resources to get you started if this is your first Flutter project:
 
