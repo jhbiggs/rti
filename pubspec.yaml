@@ -53,6 +53,7 @@ dependencies:
   integration_test: ^0.8.1
   file_picker: ^4.4.0
   firebase_database: ^9.0.7
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:

@@ -27,4 +27,22 @@ class FormController {
       return jsonStudent.map((json) => StudentForm.fromJson(json)).toList();
     });
   }
+
+  void submitForm(
+      StudentForm feedbackForm, void Function(String) callback) async {
+    try {
+      await http.post(uRL, body: feedbackForm.toJson()).then((response) async {
+        if (response.statusCode == 302) {
+          var url2 = response.headers['location'];
+          await http.get(Uri.parse(url2!)).then((response) {
+            callback(convert.jsonDecode(response.body)['status']);
+          });
+        } else {
+          callback(convert.jsonDecode(response.body)['status']);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }

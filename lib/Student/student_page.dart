@@ -20,7 +20,7 @@ class StudentScreen extends StatelessWidget {
         child: SizedBox(
           width: 400,
           child: Card(
-            child: StudentForm(),
+            child: StudentFormScreen(),
           ),
         ),
       ),
@@ -28,14 +28,14 @@ class StudentScreen extends StatelessWidget {
   }
 }
 
-class StudentForm extends StatefulWidget {
-  const StudentForm({Key? key}) : super(key: key);
+class StudentFormScreen extends StatefulWidget {
+  const StudentFormScreen({Key? key}) : super(key: key);
 
   @override
-  _StudentFormState createState() => _StudentFormState();
+  _StudentFormScreenState createState() => _StudentFormScreenState();
 }
 
-class _StudentFormState extends State<StudentForm> {
+class _StudentFormScreenState extends State<StudentFormScreen> {
   late Student studentSelf;
   //making sure there is no null pointer exception thrown if there are no assignments yet.
   late List<RTIAssignment> studentSelfAssignments = [];

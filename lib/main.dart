@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:rti/Administrator/StudentAssignmentScreen.dart';
+import 'package:rti/Administrator/student_assignment_screen.dart';
 import 'package:rti/Administrator/admin_teacher_roster_page.dart';
 import 'package:rti/Model/file_picker_demo.dart';
 import 'package:rti/Parent/parent.dart';

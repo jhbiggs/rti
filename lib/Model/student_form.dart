@@ -3,21 +3,22 @@
 class StudentForm {
   String name;
   String subject;
-  String id;
-  String teacher;
+  String assignment;
+  String? teacher;
   String standard;
 
-  StudentForm(this.name, this.subject, this.id, this.teacher, this.standard);
+  StudentForm(this.name, this.subject, this.standard, this.assignment);
 
   factory StudentForm.fromJson(dynamic json) {
-    return StudentForm('${json['name']}', '${json['subject']}', '${json['id']}',
-        '${json['teacher']}', '${json['standard']}');
+    return StudentForm('${json['name']}', '${json['subject']}',
+        '${json['standard']}', '${json['assignment']}');
   }
 
   // method to make get parameters
   Map toJson() => {
         'name': name,
         'subject': subject,
-        'id': id,
+        'standard': standard,
+        'assignment': assignment,
       };
 }

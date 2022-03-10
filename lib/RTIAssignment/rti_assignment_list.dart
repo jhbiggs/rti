@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/widgets.dart';
 
-import '../Administrator/StudentAssignmentScreen.dart';
+import '../Administrator/student_assignment_screen.dart';
+import '../Model/form_controller.dart';
+import '../Model/student_form.dart';
 import '../Student/student.dart';
 import '../Model/constants.dart';
 
@@ -31,6 +33,7 @@ class RtIAssignmentList extends StatefulWidget {
 
 class _RtIAssignmentListState extends State<RtIAssignmentList> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_RtIAssignmentListState');
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _controller = TextEditingController();
   final _subjectTextController = TextEditingController();
   final _standardTextController = TextEditingController();
@@ -51,6 +54,41 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
 
     Navigator.pushNamed(context, StudentAssignmentScreen.routeName,
         arguments: assignment);
+  }
+
+  void _submitForm() {
+    // Validate returns true if the form is valid, or false
+    // otherwise.
+    // if (_formKey.currentState!.validate()) {
+    // If the form is valid, proceed.
+    StudentForm feedbackForm = StudentForm(
+        _nameTextController.text,
+        _subjectTextController.text,
+        _standardTextController.text,
+        _assignmentTextController.text);
+
+    FormController formController = FormController();
+
+    _showSnackbar("Submitting Feedback");
+
+    // Submit 'feedbackForm' and save it in Google Sheets.
+    formController.submitForm(feedbackForm, (String response) {
+      print("Response: $response");
+      if (response == FormController.STATUS_SUCCESS) {
+        // Feedback is saved succesfully in Google Sheets.
+        _showSnackbar("Feedback Submitted");
+      } else {
+        // Error Occurred while saving data in Google Sheets.
+        _showSnackbar("Error Occurred!");
+      }
+    });
+    // }
+  }
+
+  // Method to show snackbar with 'message'.
+  _showSnackbar(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -183,15 +221,16 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
               const Text('SEND')
             ]),
             onPressed: () async {
-              await widget.addAssignment(RTIAssignment(
-                  /*TODO: get the teacher name from the userInfo and add it to the assignment
-                Must have a model on the server checking the number of students already
-                in the class.*/
-                  student: _selectedStudent,
-                  subject: _subjectTextController.text,
-                  standard: _standardTextController.text,
-                  assignmentName: _assignmentTextController.text,
-                  startDate: DateTime.now()));
+              _submitForm();
+              // await widget.addAssignment(RTIAssignment(
+              //     /*TODO: get the teacher name from the userInfo and add it to the assignment
+              //   Must have a model on the server checking the number of students already
+              //   in the class.*/
+              //     student: _selectedStudent,
+              //     subject: _subjectTextController.text,
+              //     standard: _standardTextController.text,
+              //     assignmentName: _assignmentTextController.text,
+              //     startDate: DateTime.now()));
               _subjectTextController.clear();
               _nameTextController.clear();
               _standardTextController.clear();
