@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>972193772481-a9fdu7egoh62tujilhj8t11h4lpliijb.apps.googleusercontent.com</string>
+	<string>972193772481-nobiuobg0fupjfccneib3jqir4l4mvds.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.972193772481-a9fdu7egoh62tujilhj8t11h4lpliijb</string>
+	<string>com.googleusercontent.apps.972193772481-nobiuobg0fupjfccneib3jqir4l4mvds</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>972193772481-bdsr48hfs00usq146ha3btk4a1qh8001.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB7lcNfvsHXq12NS_KmXMof9OaML01GlRM</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.rti</string>
+	<string>com.mindframe.rti</string>
 	<key>PROJECT_ID</key>
 	<string>rti4-db375</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:972193772481:ios:3e9ae3849b7ca8a8663540</string>
+	<string>1:972193772481:ios:a1bed2caa3c2377c663540</string>
+	<key>DATABASE_URL</key>
+	<string>https://rti4-db375-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
