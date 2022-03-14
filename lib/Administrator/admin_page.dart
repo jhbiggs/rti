@@ -47,7 +47,7 @@ class _AdminFormState extends State<AdminForm> {
   final _assignmentsSheetController = TextEditingController();
 
   final List<List<String>> _adminCards = [
-    ['Groups', '/groups'],
+    // ['Groups', '/groups'],
     ['Teachers', '/teachers'],
     ['Subjects', '/subjects'],
     ['Students', '/students'],

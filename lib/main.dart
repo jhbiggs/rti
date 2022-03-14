@@ -1,16 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rti/Administrator/student_assignment_screen.dart';
 import 'package:rti/Administrator/admin_teacher_roster_page.dart';
 import 'package:rti/Model/file_picker_demo.dart';
-import 'package:rti/Parent/parent.dart';
 import 'package:rti/Parent/parent_page.dart';
+import 'package:rti/authentication_google.dart';
+import 'package:rti/custom_colors.dart';
+import 'package:rti/google_sign_in_button.dart';
 import 'package:rti/role_page.dart';
 import 'package:rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:rti/Student/student_page.dart';
 import 'package:rti/subjects_page.dart';
 import 'package:rti/Administrator/teacher_list_page.dart';
-import 'package:rti/widgets.dart';
 
 import 'Administrator/admin_page.dart';
 import 'Model/Authentication/application_state.dart';
@@ -19,6 +20,7 @@ import 'Model/constants.dart';
 import 'Model/role.dart';
 import 'groups_page.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() {
   runApp(
@@ -102,6 +104,24 @@ class _SignUpFormState extends State<SignUpForm> {
   final _passwordTextController = TextEditingController();
   Role dropdownValue = Role.teacher;
 
+  Future<UserCredential> _signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   void _pushRelevantPage() async {
     print("going into userdata switch");
     switch (UserData.role) {
@@ -131,7 +151,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('RTI',
@@ -153,6 +173,21 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ]),
+            FutureBuilder(
+              future: AuthenticationGoogle.initializeFirebase(context: context),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Error initializing Firebase');
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  return GoogleSignInButton();
+                }
+                return const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    CustomColors.firebaseOrange,
+                  ),
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
@@ -171,7 +206,16 @@ class _SignUpFormState extends State<SignUpForm> {
                   }),
                 ),
                 onPressed: _pushRelevantPage,
-                child: const Text('Go'),
+                child: Row(
+                  children: const [
+                    Spacer(),
+                    Text(
+                      'Go',
+                      textAlign: TextAlign.center,
+                    ),
+                    Spacer()
+                  ],
+                ),
               ),
             ),
           ],

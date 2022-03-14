@@ -103,29 +103,31 @@ class ApplicationState extends ChangeNotifier {
             notifyListeners();
           });
         }
-        // if (isAdmin) {
-        //   //get the list of all assignments
-        //   _guestBookSubscription = FirebaseFirestore.instance
-        //       .collection('assignments')
-        //       .orderBy('timestamp', descending: true)
-        //       .snapshots()
-        //       .listen((snapshot) {
-        //     _guestBookMessages = [];
-        //     for (final document in snapshot.docs) {
-        //       _guestBookMessages.add(
-        //         RTIAssignment(
-        //             standard: document.data()['standard'],
-        //             student: Student(
-        //                 name: document.data()['student_name'],
-        //                 accessCode: ''), //TODO:implement getting access code
-        //             subject: document.data()['subject'],
-        //             teacher: document.data()['teacher'],
-        //             startDate: DateTime.now()),
-        //       );
-        //     }
-        //     notifyListeners();
-        //   });
-        // }
+        if (isAdmin) {
+          //get the list of all assignments
+          _guestBookSubscription = db.onValue //FirebaseFirestore.instance
+              // .collection('assignments')
+              // .orderBy('timestamp', descending: true)
+              // .snapshots()
+              .listen((event) {
+            _guestBookMessages = [];
+            for (final document in event.snapshot.children) {
+              _guestBookMessages.add(
+                RTIAssignment(
+                    assignmentName:
+                        document.child('assignment').value.toString(),
+                    standard: document.child('standard').value.toString(),
+                    student: Student(
+                        name: document.child('student_name').value.toString(),
+                        accessCode: ''), //TODO:implement getting access code
+                    subject: document.child('subject').value.toString(),
+                    teacher: document.child('teacher').value.toString(),
+                    startDate: DateTime.now()),
+              );
+            }
+            notifyListeners();
+          });
+        }
       } else {
         _loginState = ApplicationLoginState.loggedOut;
         // Add from here

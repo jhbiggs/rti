@@ -54,6 +54,7 @@ dependencies:
   file_picker: ^4.4.0
   firebase_database: ^9.0.7
   url_launcher: ^6.0.20
+  google_sign_in: ^5.2.4
 
 dev_dependencies:
   flutter_test:
@@ -79,8 +80,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/google_logo.png
+    - assets/firebase_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

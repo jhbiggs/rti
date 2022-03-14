@@ -58,7 +58,7 @@ class Authentication extends StatelessWidget {
         return Row(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              padding: const EdgeInsets.all(8.0),
               child: StyledButton(
                 onPressed: () {
                   startLoginFlow();

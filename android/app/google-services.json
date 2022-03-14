@@ -1,40 +1,49 @@
 {
   "project_info": {
-    "project_number": "379477327387",
-    "project_id": "flutterfirebasedemo-d6a7d",
-    "storage_bucket": "flutterfirebasedemo-d6a7d.appspot.com"
+    "project_number": "972193772481",
+    "firebase_url": "https://rti4-db375-default-rtdb.firebaseio.com",
+    "project_id": "rti4-db375",
+    "storage_bucket": "rti4-db375.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:379477327387:android:5315661c98d2c6559c42be",
+        "mobilesdk_app_id": "1:972193772481:android:403c323dc8362974663540",
         "android_client_info": {
-          "package_name": "com.example.rti"
+          "package_name": "com.mindframe.rti"
         }
       },
       "oauth_client": [
         {
-          "client_id": "379477327387-ipbsp3h1pi14u5ki6ec78r57i4d1h4bg.apps.googleusercontent.com",
+          "client_id": "972193772481-bdsr48hfs00usq146ha3btk4a1qh8001.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindframe.rti",
+            "certificate_hash": "13faa14cf0abb520a7c120b706a6dc87c0663862"
+          }
+        },
+        {
+          "client_id": "972193772481-2q4pes3ehs5vb0g7innao7jrc80u8kfm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDozs_hgTdmcf717nh3wPFWvlE-yjkaCCg"
+          "current_key": "AIzaSyCxkGtiI0G-bobugI-VowSyHBgzI6HS-_g"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "379477327387-ipbsp3h1pi14u5ki6ec78r57i4d1h4bg.apps.googleusercontent.com",
+              "client_id": "972193772481-2q4pes3ehs5vb0g7innao7jrc80u8kfm.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "379477327387-dk3p7bd22vuju0bq4t0135fvcshkv7r6.apps.googleusercontent.com",
+              "client_id": "972193772481-1u62pdn5eftdkn71hp2sileksoms9hnf.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.gtkFlutter"
+                "bundle_id": "mindframe.rti.app"
               }
             }
           ]
