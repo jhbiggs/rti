@@ -4,9 +4,8 @@ import 'package:rti/Administrator/student_assignment_screen.dart';
 import 'package:rti/Administrator/admin_teacher_roster_page.dart';
 import 'package:rti/Model/file_picker_demo.dart';
 import 'package:rti/Parent/parent_page.dart';
-import 'package:rti/authentication_google.dart';
+import 'package:rti/Model/Authentication/authentication_google.dart';
 import 'package:rti/custom_colors.dart';
-import 'package:rti/google_sign_in_button.dart';
 import 'package:rti/role_page.dart';
 import 'package:rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:rti/Student/student_page.dart';
@@ -123,23 +122,28 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void _pushRelevantPage() async {
-    print("going into userdata switch");
+    print("going into main userdata switch");
     switch (UserData.role) {
       case Role.student:
         await Navigator.of(context).pushNamed('/student');
+        print('role is student');
         break;
       case Role.teacher:
         await Navigator.of(context).pushNamed('/teacher');
+        print('role is teacher');
         break;
       case Role.administrator:
         await Navigator.of(context).pushNamed('/admin');
+        print('role is admin');
         break;
       case Role.parent:
         await Navigator.of(context).pushNamed('/parent');
+        print('role is parent');
         break;
       // }
       case Role.none:
         // TODO: Handle this case.
+        print('no user role defined');
         break;
     }
   }
@@ -157,7 +161,7 @@ class _SignUpFormState extends State<SignUpForm> {
             Text('RTI',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline4),
-            Column(children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(
                   email: appState.email,
@@ -169,29 +173,37 @@ class _SignUpFormState extends State<SignUpForm> {
                   cancelRegistration: appState.cancelRegistration,
                   registerAccount: appState.registerAccountGeneral,
                   signOut: appState.signOut,
+                  googleSignIn: () =>
+                      ApplicationState.signInWithGoogle(context: context),
                   context: context,
                 ),
               ),
+              // FutureBuilder(
+              //   future:
+              //       AuthenticationGoogle.initializeFirebase(context: context),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.hasError) {
+              //       return const Text('Error initializing Firebase');
+              //     } else if (snapshot.connectionState == ConnectionState.done) {
+              //       return const GoogleSignInButton();
+              //     }
+              //     return const CircularProgressIndicator(
+              //       valueColor: AlwaysStoppedAnimation<Color>(
+              //         CustomColors.firebaseOrange,
+              //       ),
+              //     );
+              //   },
+              // ),
             ]),
-            FutureBuilder(
-              future: AuthenticationGoogle.initializeFirebase(context: context),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Error initializing Firebase');
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  return GoogleSignInButton();
-                }
-                return const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    CustomColors.firebaseOrange,
-                  ),
-                );
-              },
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
                 style: ButtonStyle(
+                  // shape: MaterialStateProperty.all(
+                  //   RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(20),
+                  //   ),
+                  // ),
                   foregroundColor: MaterialStateProperty.resolveWith(
                       (Set<MaterialState> states) {
                     return states.contains(MaterialState.disabled)

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rti/Model/constants.dart';
 import 'package:rti/Model/role.dart';
@@ -5,12 +6,14 @@ import 'package:rti/Model/subject.dart';
 import 'package:rti/Student/student.dart';
 
 import '../../widgets.dart';
+import 'authentication_google.dart';
 
 enum ApplicationLoginState {
   loggedOut,
   emailAddress,
   register,
   role,
+  googleLogIn,
   password,
   loggedIn,
 }
@@ -24,6 +27,7 @@ class Authentication extends StatelessWidget {
       required this.signInWithEmailAndPassword,
       required this.cancelRegistration,
       required this.registerAccount,
+      required this.googleSignIn,
       required this.signOut,
       required this.context});
 
@@ -40,6 +44,7 @@ class Authentication extends StatelessWidget {
       String password,
       void Function(Exception e) error,
       BuildContext context) signInWithEmailAndPassword;
+  final void Function() googleSignIn;
   final void Function() cancelRegistration;
   final void Function(
     String email,
@@ -57,15 +62,25 @@ class Authentication extends StatelessWidget {
       case ApplicationLoginState.loggedOut:
         return Row(
           children: [
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: StyledButton(
-                onPressed: () {
-                  startLoginFlow();
-                },
-                child: const Text('Sign In/Sign Up'),
+              child: Column(
+                children: [
+                  StyledButton(
+                    onPressed: () {
+                      startLoginFlow();
+                    },
+                    child: const Text('Sign In/Sign Up'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GoogleSignInButton(googleSignIn: googleSignIn),
+                  )
+                ],
               ),
             ),
+            const Spacer()
           ],
         );
       case ApplicationLoginState.emailAddress:
@@ -109,8 +124,9 @@ class Authentication extends StatelessWidget {
       case ApplicationLoginState.loggedIn:
         return Row(
           children: [
+            const Spacer(),
             Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              padding: const EdgeInsets.all(8.0),
               child: StyledButton(
                 onPressed: () {
                   signOut();
@@ -118,8 +134,11 @@ class Authentication extends StatelessWidget {
                 child: const Text('LOGOUT'),
               ),
             ),
+            const Spacer(),
           ],
         );
+      case ApplicationLoginState.googleLogIn:
+        return GoogleSignInButton(googleSignIn: googleSignIn);
       default:
         return Row(
           children: const [
@@ -142,7 +161,7 @@ class Authentication extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  '${(e as dynamic).objective}',
+                  '$e',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],
@@ -155,7 +174,7 @@ class Authentication extends StatelessWidget {
               },
               child: const Text(
                 'OK',
-                style: TextStyle(color: Colors.deepPurple),
+                style: TextStyle(color: Colors.amber),
               ),
             ),
           ],
@@ -517,6 +536,75 @@ class _PasswordFormState extends State<PasswordForm> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({Key? key, required this.googleSignIn})
+      : super(key: key);
+  final void Function() googleSignIn;
+
+  @override
+  _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
+}
+
+class _GoogleSignInButtonState extends State<GoogleSignInButton> {
+  bool _isSigningIn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: _isSigningIn
+          ? const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            )
+          : StyledButton(
+              // style: ButtonStyle(
+              //   backgroundColor: MaterialStateProperty.all(Colors.grey),
+              //   shape: MaterialStateProperty.all(
+              //     RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //   ),
+              // ),
+              onPressed: () async {
+                setState(() {
+                  _isSigningIn = true;
+                });
+
+                User? user = await AuthenticationGoogle.signInWithGoogle(
+                    context: context);
+
+                setState(() {
+                  _isSigningIn = false;
+                });
+
+                if (user != null) {
+                  widget.googleSignIn;
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    Image(
+                      image: AssetImage("assets/google_logo.png"),
+                      height: 20.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Sign in with Google',
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

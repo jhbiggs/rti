@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rti/user_info_screen.dart';
 
-import 'Firebase/firebase_options.dart';
+import '../../Firebase/firebase_options.dart';
+import '../constants.dart';
+import '../role.dart';
 
 class AuthenticationGoogle {
   static Future<FirebaseApp> initializeFirebase({
@@ -14,18 +16,41 @@ class AuthenticationGoogle {
     FirebaseApp firebaseApp = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // void _pushRelevantPage() async {
+    //   print("going into userdata switch");
+    //   switch (UserData.role) {
+    //     case Role.student:
+    //       await Navigator.of(context).pushNamed('/student');
+    //       break;
+    //     case Role.teacher:
+    //       await Navigator.of(context).pushNamed('/teacher');
+    //       break;
+    //     case Role.administrator:
+    //       await Navigator.of(context).pushNamed('/admin');
+    //       break;
+    //     case Role.parent:
+    //       await Navigator.of(context).pushNamed('/parent');
+    //       break;
+    //     // }
+    //     case Role.none:
+    //       // TODO: Handle this case.
+    //       break;
+    //   }
+    // }
 
-    User? user = FirebaseAuth.instance.currentUser;
+    // User? user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => UserInfoScreen(
-            user: user,
-          ),
-        ),
-      );
-    }
+    // if (user != null) {
+    //   _pushRelevantPage();
+    // Navigator.of(context).pushReplacement(
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    // UserInfoScreen(
+    //   user: user,
+    // ),
+    // ),
+    // );
+    // }
 
     return firebaseApp;
   }
