@@ -1,3 +1,8 @@
+/*
+ * Created on Sat Mar 26 2022
+ *
+ * Copyright (c) 2022 Justin Biggs, Mindframe
+ */
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

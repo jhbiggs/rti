@@ -1,3 +1,8 @@
+/*
+ * Created on Sat Mar 26 2022
+ *
+ * Copyright (c) 2022 Justin Biggs, Mindframe
+ */
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rti/Model/subject.dart';

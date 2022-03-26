@@ -1,3 +1,8 @@
+/*
+ * Created on Sat Mar 26 2022
+ *
+ * Copyright (c) 2022 Justin Biggs, Mindframe
+ */
 // student form is a data class to store data fields from a google sheet
 
 class StudentForm {

@@ -1,3 +1,8 @@
+/*
+ * Created on Sat Mar 26 2022
+ *
+ * Copyright (c) 2022 Justin Biggs, Mindframe
+ */
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

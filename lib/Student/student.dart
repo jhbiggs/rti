@@ -1,3 +1,8 @@
+/*
+ * Created on Sat Mar 26 2022
+ *
+ * Copyright (c) 2022 Justin Biggs, Mindframe
+ */
 import 'package:rti/Model/Authentication/access_code_generator.dart';
 import 'package:rti/Parent/parent.dart';
 
