@@ -116,8 +116,8 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
                         suggestionList: _subjectSuggestions,
                         itemStyle: const SuggestionItemStyle(
                           backgroundColor: Color(0xff000000),
-                          leading: Icon(Icons.person),
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          // leading: Icon(Icons.person),
+                          // borderRadius: BorderRadius.all(Radius.circular(5)),
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 1,
@@ -135,8 +135,11 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
                   ]),
                   onPressed: () {}),
             ),
-            Expanded(
-                child: TextFormField(
+          ],
+        ),
+        StyledButton(
+            onPressed: () {},
+            child: TextFormField(
               controller: _standardTextController,
               decoration: const InputDecoration(
                 hintText: 'Standard',
@@ -148,8 +151,6 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
                 return null;
               },
             )),
-          ],
-        ),
         StyledButton(
           onPressed: () {},
           child: Row(

@@ -83,13 +83,15 @@ class ApplicationState extends ChangeNotifier {
             .ref('1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1');
         if (isTeacher) {
           _guestBookSubscription = db.onValue //FirebaseFirestore.instance
+
               // .collection('assignments')
               // .where('subject', isEqualTo: teacherSubject)
               // .orderBy('timestamp', descending: true)
               // .snapshots()
               .listen((event) {
             _guestBookMessages = [];
-            for (final document in event.snapshot.children) {
+            for (final document in event.snapshot.children.where((element) =>
+                element.child('subject').value == teacherSubject)) {
               _guestBookMessages.add(
                 RTIAssignment(
                     assignmentName:
@@ -103,6 +105,7 @@ class ApplicationState extends ChangeNotifier {
                     startDate: DateTime.now()),
               );
             }
+
             notifyListeners();
           });
         }

@@ -4,7 +4,7 @@ class StudentForm {
   String name;
   String subject;
   String assignment;
-  String? teacher;
+  // String? teacher;
   String standard;
 
   StudentForm(this.name, this.subject, this.standard, this.assignment);
@@ -16,9 +16,14 @@ class StudentForm {
 
   // method to make get parameters
   Map toJson() => {
-        'name': name,
+        'row_id': '42',
+        'student_name': 'bob',
         'subject': subject,
+        'id': 'abcd1234',
+        'teacher': 'Mr. Magoo',
         'standard': standard,
+        'classroom': 'Your mom\'s',
         'assignment': assignment,
+        'name': name,
       };
 }

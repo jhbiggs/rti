@@ -3,11 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rti/user_info_screen.dart';
 
 import '../../Firebase/firebase_options.dart';
-import '../constants.dart';
-import '../role.dart';
 
 class AuthenticationGoogle {
   static Future<FirebaseApp> initializeFirebase({

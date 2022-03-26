@@ -7,8 +7,9 @@ an HTTP GET request on Google App Script Web URL, then parses the response and s
 the result */
 class FormController {
   // Google App Script Web URL
-  static Uri uRL = Uri.parse(
-      "https://script.google.com/macros/s/AKfycbxlJzEbfI-XnZKRH1FNW7g8IS_y10sS3Eey-H34VydMG7Tty_0Fobcvk_SJ5267GEk/exec");
+  static const String rawUri =
+      "https://script.google.com/macros/s/AKfycbwk50odIPxlP1qtlqkiRydfw-zUwoI9bI0PI9B_UUQlRpi3Ld7QJ_nteJ6-WCksQ4s/exec";
+  static Uri uRL = Uri.parse(rawUri);
 
   // Success status message
   static const STATUS_SUCCESS = "SUCCESS";
@@ -31,10 +32,12 @@ class FormController {
   void submitForm(
       StudentForm feedbackForm, void Function(String) callback) async {
     try {
-      await http.post(uRL, body: feedbackForm.toJson()).then((response) async {
+      await http
+          .post(uRL, body: convert.jsonEncode(feedbackForm.toJson()))
+          .then((response) async {
         if (response.statusCode == 302) {
-          var url2 = response.headers['location'];
-          await http.get(Uri.parse(url2!)).then((response) {
+          var url = Uri.parse(response.headers['location']!);
+          await http.get(url).then((response) {
             callback(convert.jsonDecode(response.body)['status']);
           });
         } else {
@@ -42,7 +45,7 @@ class FormController {
         }
       });
     } catch (e) {
-      print(e);
+      print('your error is ${e.toString()}');
     }
   }
 }
