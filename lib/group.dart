@@ -13,7 +13,7 @@ class Group {
   static int groupCounter = 0;
   late Teacher teacher;
   static final _blankGroup =
-      Group(Subject.art, Teacher("No Teacher", Subject.art));
+      Group(Subject.art, Teacher("No Teacher", Subject.art, "Mrs. Blank"));
 
   int classCapacity = Constants.getClassCountDefault();
 
@@ -41,7 +41,7 @@ class Group {
       return lowestCountGroup;
     }
     //no groups available with a teacher?, assign a blank group
-    return Group(_subject, Teacher("none available", _subject));
+    return Group(_subject, Teacher("none available", _subject, "Mrs. Group"));
   }
 
   bool hasRoom() {

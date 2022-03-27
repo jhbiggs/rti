@@ -59,7 +59,8 @@ class _TeachersListState extends State<TeachersList> {
             teacherName,
             Subject.values.firstWhere((element) =>
                 const CaseInsensitiveEquality().equals(element.name,
-                    ((user['customClaims']['subject']) as String)))));
+                    ((user['customClaims']['subject']) as String))),
+            "HC110"));
       }
     }
     teacherList.sort((a, b) => a.subject.name.compareTo(b.subject.name));

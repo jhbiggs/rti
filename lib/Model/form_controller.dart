@@ -13,7 +13,7 @@ the result */
 class FormController {
   // Google App Script Web URL
   static const String rawUri =
-      "https://script.google.com/macros/s/AKfycbwk50odIPxlP1qtlqkiRydfw-zUwoI9bI0PI9B_UUQlRpi3Ld7QJ_nteJ6-WCksQ4s/exec";
+      "https://script.google.com/macros/s/AKfycbz2e5FyQ7jqxBGXikiGQ2zdksg6OV22lqyBi035Vm1dyel3dwerA8QY-x1JcQyeZds/exec";
   static Uri uRL = Uri.parse(rawUri);
 
   // Success status message
@@ -37,9 +37,7 @@ class FormController {
   void submitForm(
       StudentForm feedbackForm, void Function(String) callback) async {
     try {
-      await http
-          .post(uRL, body: convert.jsonEncode(feedbackForm.toJson()))
-          .then((response) async {
+      await http.post(uRL, body: feedbackForm.toJson()).then((response) async {
         if (response.statusCode == 302) {
           var url = Uri.parse(response.headers['location']!);
           await http.get(url).then((response) {

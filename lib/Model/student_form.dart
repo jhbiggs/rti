@@ -3,16 +3,21 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
+
 // student form is a data class to store data fields from a google sheet
 
+import 'package:faker/faker.dart';
+
+import '../Teacher/teacher.dart';
+
 class StudentForm {
-  String name;
+  String studentName;
   String subject;
   String assignment;
-  // String? teacher;
+  Teacher? teacher;
   String standard;
 
-  StudentForm(this.name, this.subject, this.standard, this.assignment);
+  StudentForm(this.studentName, this.subject, this.standard, this.assignment);
 
   factory StudentForm.fromJson(dynamic json) {
     return StudentForm('${json['name']}', '${json['subject']}',
@@ -21,14 +26,14 @@ class StudentForm {
 
   // method to make get parameters
   Map toJson() => {
-        'row_id': '42',
-        'student_name': 'bob',
+        'row_id': "appGen${RandomGenerator().integer(10000)}",
+        'student_name': studentName,
         'subject': subject,
         'id': 'abcd1234',
-        'teacher': 'Mr. Magoo',
+        'teacher': teacher?.name ?? "no teacher assigned",
         'standard': standard,
-        'classroom': 'Your mom\'s',
+        'classroom': teacher?.classroom ?? "no classroom assigned",
         'assignment': assignment,
-        'name': name,
+        'name': studentName,
       };
 }

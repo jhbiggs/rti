@@ -47,7 +47,8 @@ class _SubjectsListState extends State<SubjectsList> {
             const CaseInsensitiveEquality().equals(
                 element.name, ((user['customClaims']['subject'] as String))));
         subjectList.add(thisSubject);
-        teacherList.add(Teacher(user['displayName'], thisSubject));
+        teacherList.add(
+            Teacher(user['displayName'], thisSubject, "Mrs. Subjects Page"));
       }
     }
     setState(() {});
