@@ -47,21 +47,15 @@ class _TeachersListState extends State<TeachersList> {
 //async getTeachers comes from Constants file
   void getTeachers() async {
     //call Future and await result
-    final teacherListResult = await Constants.listTeachers();
+    final teacherListResult = await Constants.teachers;
 
-    final tempList = teacherListResult.data['users'] as List<dynamic>;
+    final tempList = teacherListResult;
     for (Map user in tempList) {
-      if (user['customClaims']['teacher'] != null &&
-          user['customClaims']['teacher'] == true &&
-          user['customClaims']['subject'] != null) {
-        final String teacherName = user['displayName'];
-        teacherList.add(Teacher(
-            teacherName,
-            Subject.values.firstWhere((element) =>
-                const CaseInsensitiveEquality().equals(element.name,
-                    ((user['customClaims']['subject']) as String))),
-            "HC110"));
-      }
+      final String teacherName = user['displayName'];
+      final Subject teacherSubject = Subject.values.firstWhere((element) =>
+          const CaseInsensitiveEquality().equals(
+              element.name, ((user['customClaims']['subject']) as String)));
+      teacherList.add(Teacher(teacherName, teacherSubject, "HC110"));
     }
     teacherList.sort((a, b) => a.subject.name.compareTo(b.subject.name));
     setState(() {});

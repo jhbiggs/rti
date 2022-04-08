@@ -16,16 +16,18 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Administrator/Office'),
-      ),
-      backgroundColor: Colors.grey[200],
-      body: const Center(
-        child: Card(
-          child: AdminForm(),
+        appBar: AppBar(
+          title: const Text('Administrator/Office'),
         ),
-      ),
-    );
+        backgroundColor: Colors.grey[200],
+        body: const Center(
+          child: SizedBox(
+            width: 400,
+            child: Card(
+              child: AdminForm(),
+            ),
+          ),
+        ));
   }
 }
 
@@ -127,39 +129,39 @@ class _AdminFormState extends State<AdminForm> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(shrinkWrap: true, children: [
-      ListView.builder(
-        shrinkWrap: true,
-        itemCount: _adminCards.length,
-        itemBuilder: (context, index) => Card(
-          elevation: 5,
-          child: ListTile(
-            title: Text(_adminCards.elementAt(index).elementAt(0)),
-            onTap: () {
-              _goToPage(_adminCards.elementAt(index).elementAt(1));
-            },
-          ),
-        ),
-      ),
-      Card(
-        elevation: 5,
-        child: ListTile(
-          autofocus: false,
-          title: Column(
-            children: [
-              Row(
-                children: [
-                  Text(_fileName ?? 'File will go here...'),
-                  const Spacer(),
-                  TextButton(
-                      onPressed: _pickFiles,
-                      child: const Text('Choose your source...'))
-                ],
-              ),
-            ],
-          ),
-        ),
-      )
-    ]);
+    return ListView.builder(
+      itemCount: _adminCards.length,
+      itemBuilder: (context, index) {
+        return Card(
+            elevation: 5,
+            child: ListTile(
+              title: Text(_adminCards.elementAt(index).elementAt(0)),
+              onTap: () {
+                _goToPage(_adminCards.elementAt(index).elementAt(1));
+              },
+            ));
+      },
+      // Card(
+      //   elevation: 5,
+      //   child: ListTile(
+      //     autofocus: false,
+      //     title: Column(
+      //       children: [
+      //         Row(
+      //           children: [
+      //             Text(_fileName ?? 'File will go here...'),
+      //             const Spacer(),
+      //             TextButton(
+      //                 onPressed: _pickFiles,
+      //                 child: const Text('Choose your source...'))
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // )
+      // ]
+      // ),
+    );
   }
 }

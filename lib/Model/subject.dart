@@ -21,12 +21,12 @@ enum Subject {
 extension SubjectExtension on Subject {
   Map<String, dynamic> toJson() => {'name': name};
 
-  List<dynamic> get names {
-    var tempArray = [];
+  static List<String> get names {
+    var tempArray = <String>[];
     for (Subject subject in Subject.values) {
       tempArray.add(subject.name);
     }
-    return tempArray.toList();
+    return tempArray;
   }
 
   String get name {

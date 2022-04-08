@@ -7,7 +7,8 @@ import 'package:rti/Parent/parent_page.dart';
 import 'package:rti/role_page.dart';
 import 'package:rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:rti/Student/student_page.dart';
-import 'package:rti/subjects_page.dart';
+import 'package:rti/rti_assignments_page_by_subject.dart';
+import 'package:rti/subjects_page_per_teacher.dart';
 import 'package:rti/Administrator/teacher_list_page.dart';
 
 import 'Administrator/admin_page.dart';
@@ -15,7 +16,8 @@ import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';
 import 'Model/constants.dart';
 import 'Model/role.dart';
-import 'students_listed_by_group_page.dart';
+import 'Model/subject.dart';
+import 'group_list_screen.dart';
 // import 'groups_page.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -44,11 +46,11 @@ class SignUpApp extends StatelessWidget {
         '/admin': (context) => const AdminScreen(),
         '/student': (context) => const StudentScreen(),
         '/students': (context) => const RTIAssignmentsScreen(),
-        '/groups': (context) => const GroupListScreen(
-              subject: "Art",
-            ),
+        '/groups': (context) => const GroupListScreen(),
         '/teachers': (context) => const TeachersScreen(),
         '/subjects': (context) => const SubjectsScreen(),
+        '/subject_group_list_page': (context) =>
+            const RTIAssignmentsScreenBySubject(),
         '/rti_assignments': (context) => const RTIAssignmentsScreen(),
         AdminTeacherRosterScreen.routeName: (context) =>
             const AdminTeacherRosterScreen(),
@@ -127,20 +129,24 @@ class _SignUpFormState extends State<SignUpForm> {
 
     switch (UserData.role) {
       case Role.student:
-        await Navigator.of(context).pushNamed('/student');
         print('role is student');
+
+        await Navigator.of(context).pushNamed('/student');
         break;
       case Role.teacher:
-        await Navigator.of(context).pushNamed('/teacher');
         print('role is teacher');
+
+        await Navigator.of(context).pushNamed('/teacher');
         break;
       case Role.administrator:
-        await Navigator.of(context).pushNamed('/admin');
         print('role is admin');
+
+        await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.parent:
-        await Navigator.of(context).pushNamed('/parent');
         print('role is parent');
+
+        await Navigator.of(context).pushNamed('/parent');
         break;
       // }
       case Role.none:

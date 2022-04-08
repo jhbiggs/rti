@@ -19,7 +19,7 @@ class SubjectsScreen extends StatelessWidget {
         child: SizedBox(
           width: 400,
           child: Card(
-            child: SubjectsList(),
+            child: SubjectsListPerTeacher(),
           ),
         ),
       ),
@@ -27,20 +27,23 @@ class SubjectsScreen extends StatelessWidget {
   }
 }
 
-class SubjectsList extends StatefulWidget {
-  const SubjectsList({Key? key}) : super(key: key);
+class SubjectsListPerTeacher extends StatefulWidget {
+  const SubjectsListPerTeacher({Key? key}) : super(key: key);
 
   @override
-  _SubjectsListState createState() => _SubjectsListState();
+  _SubjectsListPerTeacherState createState() => _SubjectsListPerTeacherState();
 }
 
-class _SubjectsListState extends State<SubjectsList> {
+class _SubjectsListPerTeacherState extends State<SubjectsListPerTeacher> {
   late List<Subject> subjectList = [];
   late List<Teacher> teacherList = [];
+
+  /*getSubjects comes from the Constants page and awaits an asynchronous
+  response from the database.  There is a check for null before sending 
+  subjects*/
   void getSubjects() async {
     final teacherListResult = await Constants.listTeachers();
-    final tempList = teacherListResult.data['users'] as List<dynamic>;
-    List<Subject> finalList = [];
+    final tempList = teacherListResult;
     for (Map user in tempList) {
       if (user['customClaims']['subject'] != null) {
         final thisSubject = Subject.values.firstWhere((element) =>

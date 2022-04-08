@@ -37,9 +37,6 @@ class RtIAssignmentList extends StatefulWidget {
 }
 
 class _RtIAssignmentListState extends State<RtIAssignmentList> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_RtIAssignmentListState');
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _controller = TextEditingController();
   final _subjectTextController = TextEditingController();
   final _standardTextController = TextEditingController();
   final _nameBoxController = BoxController();
@@ -247,25 +244,27 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
           child: Header("Your List"),
         ),
         ListView.builder(
-            shrinkWrap: true,
-            itemCount: widget.assignments.length,
-            itemBuilder: (context, index) => Card(
-                  elevation: 5,
-                  child: ListTile(
-                    isThreeLine: true,
-                    title: Text(
-                        '${widget.assignments.elementAt(index).student.getName()} needs help in '
-                        ' ${widget.assignments.elementAt(index).subject} with '
-                        '${widget.assignments.elementAt(index).standard}'),
-                    subtitle: Text(
-                        'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
-                        'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
-                    onTap: () {
-                      _pushStudentAssignmentPage(
-                          widget.assignments.elementAt(index));
-                    },
-                  ),
-                )),
+          shrinkWrap: true,
+          itemCount: widget.assignments.length,
+          itemBuilder: (context, index) =>
+              // Card(
+              //       elevation: 5,
+              //       child:
+              ListTile(
+            isThreeLine: true,
+            title: Text(
+                '${widget.assignments.elementAt(index).student.getName()} needs help in '
+                ' ${widget.assignments.elementAt(index).subject} with '
+                '${widget.assignments.elementAt(index).standard}'),
+            subtitle: Text(
+                'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
+                'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
+            onTap: () {
+              _pushStudentAssignmentPage(widget.assignments.elementAt(index));
+            },
+          ),
+          // )
+        ),
       ],
     );
   }

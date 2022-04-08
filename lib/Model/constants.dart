@@ -3,6 +3,8 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:faker/faker.dart';
@@ -12,7 +14,7 @@ import 'package:rti/Parent/parent.dart';
 import 'package:rti/RTIAssignment/rti_assignment.dart';
 import 'package:rti/Student/student.dart';
 import 'package:rti/Teacher/teacher.dart';
-import 'package:rti/subjects_page.dart';
+import 'package:rti/subjects_page_per_teacher.dart';
 import 'package:rti/Model/Authentication/access_code_generator.dart';
 
 import '../Administrator/administrator.dart';
@@ -33,13 +35,13 @@ class Constants {
           assignmentName: "Problem Set A"));
   static List<Parent> parents =
       List.generate(30, (index) => Parent(name: faker.person.name()));
-  static var subjects = Subject.values.map((e) => e.name).toList();
+  static var subjects = SubjectExtension.names;
   static List<Group> groups = [];
   // teachers.map((element) => Group(element.subject, element)).toList();
-  static Future<HttpsCallableResult<dynamic>> teachers = listTeachers();
+  static FutureOr<List<dynamic>> teachers = listTeachers();
 
   //static function offers a list of teachers from Firebase
-  static Future<HttpsCallableResult> listTeachers() async {
+  static FutureOr<List<dynamic>> listTeachers() async {
     //server-side firebase function
     FirebaseFunctions functions = FirebaseFunctions.instance;
 
@@ -49,17 +51,17 @@ class Constants {
     //call the callable as a function and invoke it server-side
     final results = await listTeachersFunction();
     var userArray = results.data['users'];
+    var resultsArray = [];
     for (Map<String, dynamic> user in userArray) {
-      print("Your user is $user");
-      if (user['customClaims']['admin'] != null) {
-        print("not null");
+      if (user['customClaims'] != null &&
+          user['customClaims']['teacher'] == true) {
+        resultsArray.add(user);
+        print("Your user is ${user['customClaims']['subject'] ?? "nothing"} and"
+            " the username is ${user['displayName']}");
       }
-      ;
     }
-    print("Your results are ${results.data['users'][0]['customClaims']}");
-
     //return the listResult of all teacher users
-    return results;
+    return resultsArray;
   }
 
   static final faker = Faker();
