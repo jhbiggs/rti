@@ -34,9 +34,9 @@ class Constants {
   static List<Parent> parents =
       List.generate(30, (index) => Parent(name: faker.person.name()));
   static var subjects = Subject.values.map((e) => e.name).toList();
-  static List<Group> groups =
-      teachers.map((element) => Group(element.subject, element)).toList();
-  static List<Teacher> teachers = [];
+  static List<Group> groups = [];
+  // teachers.map((element) => Group(element.subject, element)).toList();
+  static Future<HttpsCallableResult<dynamic>> teachers = listTeachers();
 
   //static function offers a list of teachers from Firebase
   static Future<HttpsCallableResult> listTeachers() async {
@@ -46,9 +46,17 @@ class Constants {
     //listAllUsers is function on Firebase
     HttpsCallable listTeachersFunction =
         functions.httpsCallable('listAllUsers');
-
     //call the callable as a function and invoke it server-side
     final results = await listTeachersFunction();
+    var userArray = results.data['users'];
+    for (Map<String, dynamic> user in userArray) {
+      print("Your user is $user");
+      if (user['customClaims']['admin'] != null) {
+        print("not null");
+      }
+      ;
+    }
+    print("Your results are ${results.data['users'][0]['customClaims']}");
 
     //return the listResult of all teacher users
     return results;

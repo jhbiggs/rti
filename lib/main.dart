@@ -4,8 +4,6 @@ import 'package:rti/Administrator/student_assignment_screen.dart';
 import 'package:rti/Administrator/admin_teacher_roster_page.dart';
 import 'package:rti/Model/file_picker_demo.dart';
 import 'package:rti/Parent/parent_page.dart';
-import 'package:rti/Model/Authentication/authentication_google.dart';
-import 'package:rti/custom_colors.dart';
 import 'package:rti/role_page.dart';
 import 'package:rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:rti/Student/student_page.dart';
@@ -17,7 +15,8 @@ import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';
 import 'Model/constants.dart';
 import 'Model/role.dart';
-import 'groups_page.dart';
+import 'students_listed_by_group_page.dart';
+// import 'groups_page.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -45,7 +44,9 @@ class SignUpApp extends StatelessWidget {
         '/admin': (context) => const AdminScreen(),
         '/student': (context) => const StudentScreen(),
         '/students': (context) => const RTIAssignmentsScreen(),
-        '/groups': (context) => const GroupScreen(),
+        '/groups': (context) => const GroupListScreen(
+              subject: "Art",
+            ),
         '/teachers': (context) => const TeachersScreen(),
         '/subjects': (context) => const SubjectsScreen(),
         '/rti_assignments': (context) => const RTIAssignmentsScreen(),
@@ -61,7 +62,6 @@ class SignUpApp extends StatelessWidget {
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +123,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _pushRelevantPage() async {
     print("going into main userdata switch");
+    await Constants.listTeachers();
+
     switch (UserData.role) {
       case Role.student:
         await Navigator.of(context).pushNamed('/student');
@@ -178,22 +180,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   context: context,
                 ),
               ),
-              // FutureBuilder(
-              //   future:
-              //       AuthenticationGoogle.initializeFirebase(context: context),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.hasError) {
-              //       return const Text('Error initializing Firebase');
-              //     } else if (snapshot.connectionState == ConnectionState.done) {
-              //       return const GoogleSignInButton();
-              //     }
-              //     return const CircularProgressIndicator(
-              //       valueColor: AlwaysStoppedAnimation<Color>(
-              //         CustomColors.firebaseOrange,
-              //       ),
-              //     );
-              //   },
-              // ),
             ]),
             Padding(
               padding: const EdgeInsets.all(8.0),

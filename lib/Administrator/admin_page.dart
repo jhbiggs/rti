@@ -52,7 +52,7 @@ class _AdminFormState extends State<AdminForm> {
   final _assignmentsSheetController = TextEditingController();
 
   final List<List<String>> _adminCards = [
-    // ['Groups', '/groups'],
+    ['Groups', '/groups'],
     ['Teachers', '/teachers'],
     ['Subjects', '/subjects'],
     ['Students', '/students'],
@@ -149,13 +149,11 @@ class _AdminFormState extends State<AdminForm> {
             children: [
               Row(
                 children: [
-                  Container(
-                      // width: 150,
-                      child: Text(_fileName ?? 'File will go here...')),
-                  Spacer(),
+                  Text(_fileName ?? 'File will go here...'),
+                  const Spacer(),
                   TextButton(
                       onPressed: _pickFiles,
-                      child: Text('Choose your source...'))
+                      child: const Text('Choose your source...'))
                 ],
               ),
             ],

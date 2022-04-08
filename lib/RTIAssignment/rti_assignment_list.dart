@@ -26,11 +26,11 @@ class RtIAssignmentMessage {
 }
 
 class RtIAssignmentList extends StatefulWidget {
-  RtIAssignmentList(
+  const RtIAssignmentList(
       {Key? key, required this.addAssignment, required this.assignments})
       : super(key: key);
   final FutureOr<void> Function(RTIAssignment assignment) addAssignment;
-  List<RTIAssignment> assignments;
+  final List<RTIAssignment> assignments;
 
   @override
   _RtIAssignmentListState createState() => _RtIAssignmentListState();
@@ -74,14 +74,14 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
 
     FormController formController = FormController();
 
-    _showSnackbar("Submitting Feedback");
+    _showSnackbar("Submitting Assignment");
 
     // Submit 'feedbackForm' and save it in Google Sheets.
     formController.submitForm(feedbackForm, (String response) {
       print("Response: $response");
       if (response == FormController.STATUS_SUCCESS) {
         // Feedback is saved succesfully in Google Sheets.
-        _showSnackbar("Feedback Submitted");
+        _showSnackbar("Assignment Submitted");
       } else {
         // Error Occurred while saving data in Google Sheets.
         _showSnackbar("Error Occurred!");
