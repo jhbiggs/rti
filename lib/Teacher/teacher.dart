@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'package:rti/Model/subject.dart';
+import 'package:com.mindframe.rti/Model/subject.dart';
 import 'package:uuid/uuid.dart';
 
 class Teacher {

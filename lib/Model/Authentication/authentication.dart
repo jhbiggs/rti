@@ -5,10 +5,10 @@
  */
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:rti/Model/constants.dart';
-import 'package:rti/Model/role.dart';
-import 'package:rti/Model/subject.dart';
-import 'package:rti/Student/student.dart';
+import 'package:com.mindframe.rti/Model/constants.dart';
+import 'package:com.mindframe.rti/Model/role.dart';
+import 'package:com.mindframe.rti/Model/subject.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
 
 import '../../widgets.dart';
 import 'authentication_google.dart';

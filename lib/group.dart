@@ -1,5 +1,5 @@
-import 'package:rti/Student/student.dart';
-import 'package:rti/Teacher/teacher.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
+import 'package:com.mindframe.rti/Teacher/teacher.dart';
 import 'package:uuid/uuid.dart';
 
 import 'Model/constants.dart';

@@ -5,19 +5,14 @@
  */
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:faker/faker.dart';
+import 'package:com.mindframe.rti/Model/subject.dart';
+import 'package:com.mindframe.rti/Parent/parent.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
+import 'package:com.mindframe.rti/Model/Authentication/access_code_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rti/Model/subject.dart';
-import 'package:rti/Parent/parent.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/Student/student.dart';
-import 'package:rti/Teacher/teacher.dart';
-import 'package:rti/subjects_page_per_teacher.dart';
-import 'package:rti/Model/Authentication/access_code_generator.dart';
-
-import '../Administrator/administrator.dart';
 import 'role.dart';
 import '../group.dart';
 
@@ -50,18 +45,21 @@ class Constants {
         functions.httpsCallable('listAllUsers');
     //call the callable as a function and invoke it server-side
     final results = await listTeachersFunction();
-    var userArray = results.data['users'];
+    var userArray = List<Object?>.from(results.data['users']);
     var resultsArray = [];
-    for (Map<String, dynamic> user in userArray) {
-      if (user['customClaims'] != null &&
-          user['customClaims']['teacher'] == true) {
-        resultsArray.add(user);
-        print("Your user is ${user['customClaims']['subject'] ?? "nothing"} and"
-            " the username is ${user['displayName']}");
-      }
-    }
+    userArray.forEach((value) {
+      print(value.toString());
+    });
+    // for (Map<String, dynamic> user in userArray) {
+    //   if (user['customClaims'] != null &&
+    //       user['customClaims']['teacher'] == true) {
+    //     resultsArray.add(user);
+    //     print("Your user is ${user['customClaims']['subject'] ?? "nothing"} and"
+    //         " the username is ${user['displayName']}");
+    //   }
+    // }
     //return the listResult of all teacher users
-    return resultsArray;
+    return []; //resultsArray.toList();
   }
 
   static final faker = Faker();

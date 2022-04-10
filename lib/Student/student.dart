@@ -3,8 +3,8 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'package:rti/Model/Authentication/access_code_generator.dart';
-import 'package:rti/Parent/parent.dart';
+import 'package:com.mindframe.rti/Model/Authentication/access_code_generator.dart';
+import 'package:com.mindframe.rti/Parent/parent.dart';
 
 class Student {
   late String _name;

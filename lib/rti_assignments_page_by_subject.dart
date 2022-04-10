@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rti/RTIAssignment/rti_assignments_page.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
 
 import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';

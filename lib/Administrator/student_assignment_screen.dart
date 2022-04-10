@@ -4,8 +4,8 @@
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
 import 'package:flutter/material.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/widgets.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
+import 'package:com.mindframe.rti/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StudentAssignmentScreen extends StatelessWidget {

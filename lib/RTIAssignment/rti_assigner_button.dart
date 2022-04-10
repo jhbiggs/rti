@@ -6,8 +6,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/widgets.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
+import 'package:com.mindframe.rti/widgets.dart';
 
 class RTIAssignerButton extends StatefulWidget {
   RTIAssignerButton({Key? key, required this.addMessage, this.assignment})

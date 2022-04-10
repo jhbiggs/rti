@@ -3,12 +3,11 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'dart:convert';
-import 'dart:io';
+// import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -39,19 +38,19 @@ class AdminForm extends StatefulWidget {
 }
 
 class _AdminFormState extends State<AdminForm> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  String? _fileName;
-  String? _saveAsFileName;
-  List<PlatformFile>? _paths;
-  String? _directoryPath;
-  String? _extension;
-  bool _isLoading = false;
-  bool _userAborted = false;
-  bool _multiPick = false;
-  FileType _pickingType = FileType.any;
-  TextEditingController _controller = TextEditingController();
-  final _assignmentsSheetController = TextEditingController();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  // String? _fileName;
+  // String? _saveAsFileName;
+  // List<PlatformFile>? _paths;
+  // String? _directoryPath;
+  // String? _extension;
+  // bool _isLoading = false;
+  // bool _userAborted = false;
+  // bool _multiPick = false;
+  // FileType _pickingType = FileType.any;
+  // TextEditingController _controller = TextEditingController();
+  // final _assignmentsSheetController = TextEditingController();
 
   final List<List<String>> _adminCards = [
     ['Groups', '/groups'],
@@ -65,67 +64,67 @@ class _AdminFormState extends State<AdminForm> {
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() => _extension = _controller.text);
+    // _controller.addListener(() => _extension = _controller.text);
   }
 
   void _goToPage(String page) {
     Navigator.of(context).pushNamed(page);
   }
 
-  void _resetState() {
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-      _directoryPath = null;
-      _fileName = null;
-      _paths = null;
-      _saveAsFileName = null;
-      _userAborted = false;
-    });
-  }
+  // void _resetState() {
+  //   if (!mounted) {
+  //     return;
+  //   }
+  //   setState(() {
+  //     _isLoading = true;
+  //     _directoryPath = null;
+  //     _fileName = null;
+  //     _paths = null;
+  //     _saveAsFileName = null;
+  //     _userAborted = false;
+  //   });
+  // }
 
-  void _pickFiles() async {
-    _resetState();
-    try {
-      _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
-        type: _pickingType,
-        allowMultiple: _multiPick,
-        onFileLoading: (FilePickerStatus status) => print(status),
-        allowedExtensions: (_extension?.isNotEmpty ?? false)
-            ? _extension?.replaceAll(' ', '').split(',')
-            : null,
-      ))
-          ?.files;
-      print(_paths!.first.toString());
-      PlatformFile myFile = _paths!.first;
-      print(utf8.decode(myFile.bytes!));
-    } on PlatformException catch (e) {
-      _logException('Unsupported operation' + e.toString());
-    } catch (e) {
-      _logException(e.toString());
-    }
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-      _fileName = _paths != null
-          ? _paths!.map((e) => e.name).toString()
-          : 'File will go here...';
-      _userAborted = _paths == null;
-    });
-  }
+  // void _pickFiles() async {
+  //   _resetState();
+  //   try {
+  //     _directoryPath = null;
+  //     _paths = (await FilePicker.platform.pickFiles(
+  //       type: _pickingType,
+  //       allowMultiple: _multiPick,
+  //       onFileLoading: (FilePickerStatus status) => print(status),
+  //       allowedExtensions: (_extension?.isNotEmpty ?? false)
+  //           ? _extension?.replaceAll(' ', '').split(',')
+  //           : null,
+  //     ))
+  //         ?.files;
+  //     print(_paths!.first.toString());
+  //     PlatformFile myFile = _paths!.first;
+  //     print(utf8.decode(myFile.bytes!));
+  //   } on PlatformException catch (e) {
+  //     _logException('Unsupported operation' + e.toString());
+  //   } catch (e) {
+  //     _logException(e.toString());
+  //   }
+  //   if (!mounted) return;
+  //   setState(() {
+  //     _isLoading = false;
+  //     _fileName = _paths != null
+  //         ? _paths!.map((e) => e.name).toString()
+  //         : 'File will go here...';
+  //     _userAborted = _paths == null;
+  //   });
+  // }
 
-  void _logException(String message) {
-    print(message);
-    _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-    _scaffoldMessengerKey.currentState?.showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+  // void _logException(String message) {
+  //   print(message);
+  //   _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+  //   _scaffoldMessengerKey.currentState?.showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

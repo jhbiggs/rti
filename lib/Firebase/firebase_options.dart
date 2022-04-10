@@ -62,6 +62,6 @@ class DefaultFirebaseOptions {
     projectId: 'rti4-db375',
     storageBucket: 'rti4-db375.appspot.com',
     iosClientId: '972193772481-mfruon11fack3grufj4ldsjihu2ptecc.apps.googleusercontent.com',
-    iosBundleId: 'com.example.rti',
+    iosBundleId: 'com.mindframe.rti.mindframe.rti',
   );
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'package:rti/Student/student.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
 import 'package:xid/xid.dart';
 
 class Parent extends Comparable {

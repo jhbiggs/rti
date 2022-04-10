@@ -6,8 +6,8 @@
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/Student/student.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
 
 import '../Model/constants.dart';
 

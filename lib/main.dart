@@ -1,15 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:rti/Administrator/student_assignment_screen.dart';
-import 'package:rti/Administrator/admin_teacher_roster_page.dart';
-import 'package:rti/Model/file_picker_demo.dart';
-import 'package:rti/Parent/parent_page.dart';
-import 'package:rti/role_page.dart';
-import 'package:rti/RTIAssignment/rti_assignments_page.dart';
-import 'package:rti/Student/student_page.dart';
-import 'package:rti/rti_assignments_page_by_subject.dart';
-import 'package:rti/subjects_page_per_teacher.dart';
-import 'package:rti/Administrator/teacher_list_page.dart';
+import 'package:com.mindframe.rti/Administrator/student_assignment_screen.dart';
+import 'package:com.mindframe.rti/Administrator/admin_teacher_roster_page.dart';
+import 'package:com.mindframe.rti/Model/file_picker_demo.dart';
+import 'package:com.mindframe.rti/Parent/parent_page.dart';
+import 'package:com.mindframe.rti/role_page.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
+import 'package:com.mindframe.rti/Student/student_page.dart';
+import 'package:com.mindframe.rti/rti_assignments_page_by_subject.dart';
+import 'package:com.mindframe.rti/subjects_page_per_teacher.dart';
+import 'package:com.mindframe.rti/Administrator/teacher_list_page.dart';
 
 import 'Administrator/admin_page.dart';
 import 'Model/Authentication/application_state.dart';

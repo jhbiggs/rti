@@ -5,9 +5,9 @@
  */
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:rti/Model/subject.dart';
-import 'package:rti/RTIAssignment/rti_assignments_page.dart';
-import 'package:rti/Teacher/teacher.dart';
+import 'package:com.mindframe.rti/Model/subject.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
+import 'package:com.mindframe.rti/Teacher/teacher.dart';
 
 import '../Model/constants.dart';
 import 'admin_teacher_roster_page.dart';

@@ -3,10 +3,10 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'package:rti/Parent/parent.dart';
-import 'package:rti/Student/student.dart';
+import 'package:com.mindframe.rti/Parent/parent.dart';
+import 'package:com.mindframe.rti/Student/student.dart';
 
-import 'package:rti/Model/constants.dart';
+import 'package:com.mindframe.rti/Model/constants.dart';
 
 class Children {
   static List<Student> of({Parent? parent}) {

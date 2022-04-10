@@ -47,7 +47,7 @@ class _RolePageFormState extends State<RolePageForm> {
   }
 
   void _showRTITeacherScreen() {
-    Navigator.of(context).pushNamed('/rti-teacher');
+    Navigator.of(context).pushNamed('/com.mindframe.rti-teacher');
   }
 
   @override

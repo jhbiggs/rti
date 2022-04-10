@@ -8,8 +8,8 @@ import 'dart:async';
 import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:rti/RTIAssignment/rti_assignment.dart';
-import 'package:rti/widgets.dart';
+import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
+import 'package:com.mindframe.rti/widgets.dart';
 
 import '../Administrator/student_assignment_screen.dart';
 import '../Model/form_controller.dart';
