@@ -55,10 +55,11 @@ class _AdminFormState extends State<AdminForm> {
   final List<List<String>> _adminCards = [
     ['Groups', '/groups'],
     ['Teachers', '/teachers'],
-    ['Subjects', '/subjects'],
-    ['Students', '/students'],
-    ['RTI Assignments', '/rti_assignments'],
-    ['Choose your source...', '/file_picker']
+    // ['Subjects', '/subjects'],
+    ['All Students\' Assignments', '/students'],
+    // ['RTI Assignments', '/rti_assignments'],
+    ['Choose your source...', '/file_picker'],
+    // ['Easy File Picker', '/easy_file_picker']
   ];
 
   @override
@@ -140,27 +141,7 @@ class _AdminFormState extends State<AdminForm> {
               },
             ));
       },
-      // Card(
-      //   elevation: 5,
-      //   child: ListTile(
-      //     autofocus: false,
-      //     title: Column(
-      //       children: [
-      //         Row(
-      //           children: [
-      //             Text(_fileName ?? 'File will go here...'),
-      //             const Spacer(),
-      //             TextButton(
-      //                 onPressed: _pickFiles,
-      //                 child: const Text('Choose your source...'))
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // )
-      // ]
-      // ),
+      //
     );
   }
 }

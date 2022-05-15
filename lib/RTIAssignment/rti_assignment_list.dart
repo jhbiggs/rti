@@ -98,6 +98,32 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+         const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Header("Your List"),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: widget.assignments.length,
+          itemBuilder: (context, index) =>
+              // Card(
+              //       elevation: 5,
+              //       child:
+              ListTile(
+            isThreeLine: true,
+            title: Text(
+                '${widget.assignments.elementAt(index).student.getName()} needs help in '
+                ' ${widget.assignments.elementAt(index).subject} with '
+                '${widget.assignments.elementAt(index).standard}'),
+            subtitle: Text(
+                'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
+                'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
+            onTap: () {
+              _pushStudentAssignmentPage(widget.assignments.elementAt(index));
+            },
+          ),
+          // )
+        ),
         const Padding(
           padding: EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
           child: Header("Assign a student?"),
@@ -239,32 +265,7 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
               _standardTextController.clear();
               _assignmentTextController.clear();
             }),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Header("Your List"),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.assignments.length,
-          itemBuilder: (context, index) =>
-              // Card(
-              //       elevation: 5,
-              //       child:
-              ListTile(
-            isThreeLine: true,
-            title: Text(
-                '${widget.assignments.elementAt(index).student.getName()} needs help in '
-                ' ${widget.assignments.elementAt(index).subject} with '
-                '${widget.assignments.elementAt(index).standard}'),
-            subtitle: Text(
-                'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
-                'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
-            onTap: () {
-              _pushStudentAssignmentPage(widget.assignments.elementAt(index));
-            },
-          ),
-          // )
-        ),
+       
       ],
     );
   }

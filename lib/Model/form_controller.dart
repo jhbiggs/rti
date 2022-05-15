@@ -6,6 +6,7 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import '../Model/student_form.dart';
+import 'constants.dart';
 
 /* FormController is a class which saves StudentForm in Google Sheets using
 an HTTP GET request on Google App Script Web URL, then parses the response and sends
@@ -13,7 +14,7 @@ the result */
 class FormController {
   // Google App Script Web URL
   static const String rawUri =
-      "https://script.google.com/macros/s/AKfycbz2e5FyQ7jqxBGXikiGQ2zdksg6OV22lqyBi035Vm1dyel3dwerA8QY-x1JcQyeZds/exec";
+      Constants.googleAppScriptWebURL;
   static Uri uRL = Uri.parse(rawUri);
 
   // Success status message
@@ -24,7 +25,7 @@ class FormController {
     return await http.get(uRL).then((response) {
       var jsonStudent = [];
       try {
-        // print(response.body);
+        print(response.body);
         jsonStudent = convert.jsonDecode(response.body) as List;
         print(jsonStudent);
       } catch (e) {

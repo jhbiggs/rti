@@ -15,7 +15,8 @@ enum Subject {
   pE,
   science,
   specialEd,
-  socialStudies
+  socialStudies,
+  none
 }
 
 extension SubjectExtension on Subject {
@@ -55,6 +56,8 @@ extension SubjectExtension on Subject {
         return "Social Studies";
       case Subject.specialEd:
         return "Special Education";
+      case Subject.none:
+        return "No Subject Assigned";
     }
   }
 }

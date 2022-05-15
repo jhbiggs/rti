@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:com.mindframe.rti/Administrator/easy_file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:com.mindframe.rti/Administrator/student_assignment_screen.dart';
 import 'package:com.mindframe.rti/Administrator/admin_teacher_roster_page.dart';
@@ -16,18 +16,17 @@ import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';
 import 'Model/constants.dart';
 import 'Model/role.dart';
-import 'Model/subject.dart';
 import 'group_list_screen.dart';
-// import 'groups_page.dart';
 import 'package:provider/provider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 void main() {
+  // runApp(const MyApp());
   runApp(
     ChangeNotifierProvider(
         create: (context) => ApplicationState(),
         builder: (context, _) => const SignUpApp()),
   );
+
 }
 
 class SignUpApp extends StatelessWidget {
@@ -36,7 +35,10 @@ class SignUpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark().copyWith(
+          secondaryHeaderColor: Colors.grey.shade300,
+          focusColor: Colors.amber.shade300,
+          highlightColor: Colors.amber.shade100),
       routes: {
         '/': (context) => const SignUpScreen(),
         '/welcome': (context) => const WelcomeScreen(),
@@ -56,7 +58,10 @@ class SignUpApp extends StatelessWidget {
             const AdminTeacherRosterScreen(),
         StudentAssignmentScreen.routeName: ((context) =>
             const StudentAssignmentScreen()),
-        '/file_picker': (context) => FilePickerDemo()
+        '/file_picker': (context) => const FilePickerDemo(),
+        '/easy_file_picker': (context) => const EasyFilePicker(
+              title: "MyTitle",
+            )
       },
     );
   }
@@ -67,14 +72,31 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: const Center(
-        child: SizedBox(
-          width: 400,
-          child: Card(
-            child: SignUpForm(),
+      backgroundColor: Colors.grey[400],
+      body: Column(
+        children: [
+          const Spacer(),
+          const Center(
+            child: SizedBox(
+              width: 400,
+              child: Card(
+                child: SignUpForm(),
+              ),
+            ),
           ),
-        ),
+          const Spacer(),
+          Row(
+            children: const [
+              Spacer(),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.info,
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -100,28 +122,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final _firstNameTextController = TextEditingController();
-  final _lastNameTextController = TextEditingController();
-  final _passwordTextController = TextEditingController();
   Role dropdownValue = Role.teacher;
-
-  Future<UserCredential> _signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
 
   void _pushRelevantPage() async {
     print("going into main userdata switch");
@@ -188,7 +189,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ]),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
               child: TextButton(
                 style: ButtonStyle(
                   // shape: MaterialStateProperty.all(

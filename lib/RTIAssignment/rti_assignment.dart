@@ -41,12 +41,10 @@ class RTIAssignment {
       required this.assignmentName,
       this.endDate,
       this.teacher}) {
-    if (this.endDate == null) {
-      endDate = startDate.add(Duration(days: 21));
-    }
+    endDate ??= startDate.add(const Duration(days: 21));
     //assign a relevant teacher, or let the people know there's no available teacher
     group = Constants.groups.firstWhere(
-        (element) => element.getSubject() == subject,
+        (element) => element.getSubject().name == subject,
         orElse: () => Group.getBlank());
     if (group != Group.getBlank()) {
       group.addStudentToGroup(student);

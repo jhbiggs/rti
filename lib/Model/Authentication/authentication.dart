@@ -5,10 +5,8 @@
  */
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:com.mindframe.rti/Model/constants.dart';
 import 'package:com.mindframe.rti/Model/role.dart';
 import 'package:com.mindframe.rti/Model/subject.dart';
-import 'package:com.mindframe.rti/Student/student.dart';
 
 import '../../widgets.dart';
 import 'authentication_google.dart';
@@ -57,6 +55,7 @@ class Authentication extends StatelessWidget {
     Role role,
     Subject subject,
     String password,
+    String schoolCode,
     void Function(Exception e) error,
   ) registerAccount;
   final void Function() signOut;
@@ -65,29 +64,30 @@ class Authentication extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (loginState) {
       case ApplicationLoginState.loggedOut:
-        return Row(
+        return ListView(
+          // padding: const EdgeInsets.all(8.0),
+          shrinkWrap: true,
           children: [
-            const Spacer(),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  StyledButton(
-                    onPressed: () {
-                      startLoginFlow();
-                    },
-                    child: const Text('Sign In/Sign Up'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GoogleSignInButton(googleSignIn: googleSignIn),
-                  )
-                ],
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30),
+              child: StyledButton(
+                onPressed: () {
+                  startLoginFlow();
+                },
+                child: Text('Sign In/Sign Up',
+                    style: TextStyle(
+                      color: Theme.of(context).secondaryHeaderColor,
+                    )),
               ),
             ),
-            const Spacer()
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GoogleSignInButton(googleSignIn: googleSignIn),
+            )
           ],
         );
+
       case ApplicationLoginState.emailAddress:
         return EmailForm(
             callback: (email) => verifyEmail(
@@ -109,19 +109,15 @@ class Authentication extends StatelessWidget {
           cancel: () {
             cancelRegistration();
           },
-          registerAccount: (
-            email,
-            displayName,
-            role,
-            subject,
-            password,
-          ) {
+          registerAccount:
+              (email, displayName, role, subject, password, schoolCode) {
             registerAccount(
                 email,
                 displayName,
                 role,
                 subject,
                 password,
+                schoolCode,
                 (e) =>
                     _showErrorDialog(context, 'Failed to create account', e));
           },
@@ -202,18 +198,22 @@ class _EmailFormState extends State<EmailForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
       children: [
-        const Header('Sign in with email'),
+        const Padding(
+          padding:  EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0.0),
+          child:  Header('Sign in with email'),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
                   child: TextFormField(
                     controller: _controller,
                     decoration: const InputDecoration(
@@ -261,7 +261,7 @@ class RegisterFormGeneral extends StatefulWidget {
   });
   final String email;
   final void Function(String email, String displayName, Role role,
-      Subject subject, String password) registerAccount;
+      Subject subject, String password, String schoolCode) registerAccount;
   final void Function() cancel;
   @override
   _RegisterFormGeneralState createState() => _RegisterFormGeneralState();
@@ -272,6 +272,8 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
   final _emailController = TextEditingController();
   final _displayNameController = TextEditingController();
   final _roleController = TextEditingController();
+  final _schoolCodeController = TextEditingController();
+
   Role _dropdownValueRole = Role.parent;
   Subject _dropDownValueSubject = Subject.art;
   var _isDropdownSubjectVisible = false;
@@ -286,15 +288,17 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
       children: [
         const Header('Create account'),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              shrinkWrap: true,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -320,14 +324,14 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Enter your account name';
+                        return 'Enter a name';
                       }
                       return null;
                     },
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: DropdownButton<Role>(
                     value: _dropdownValueRole,
                     icon: const Icon(Icons.arrow_downward),
@@ -338,14 +342,13 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                       color: Colors.grey,
                     ),
                     onChanged: (Role? newValue) {
-                      setState(() {
-                        _dropdownValueRole = newValue!;
-                        if (newValue == Role.teacher) {
-                          _isDropdownSubjectVisible = true;
-                        } else {
-                          _isDropdownSubjectVisible = false;
-                        }
-                      });
+                      _dropdownValueRole = newValue!;
+                      if (newValue == Role.teacher) {
+                        _isDropdownSubjectVisible = true;
+                      } else {
+                        _isDropdownSubjectVisible = false;
+                      }
+                      setState(() {});
                     },
                     items: <Role>[
                       Role.administrator,
@@ -367,7 +370,7 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                 _isDropdownSubjectVisible
                     ? Padding(
                         key: GlobalKey(debugLabel: '_subjectDropdownChooser'),
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: DropdownButton<Subject>(
                           hint: const Text(
                             "Subject",
@@ -399,6 +402,22 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
+                    controller: _schoolCodeController,
+                    decoration: const InputDecoration(
+                      hintText: 'School Code for RTI',
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter code';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: TextFormField(
                     controller: _passwordController,
                     decoration: const InputDecoration(
                       hintText: 'Password',
@@ -406,7 +425,7 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                     obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Enter your password';
+                        return 'Enter a password';
                       }
                       return null;
                     },
@@ -426,12 +445,12 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             widget.registerAccount(
-                              _emailController.text,
-                              _displayNameController.text,
-                              _dropdownValueRole,
-                              _dropDownValueSubject,
-                              _passwordController.text,
-                            );
+                                _emailController.text,
+                                _displayNameController.text,
+                                _dropdownValueRole,
+                                _dropDownValueSubject,
+                                _passwordController.text,
+                                _schoolCodeController.text);
                           }
                         },
                         child: const Text('SAVE'),
@@ -473,15 +492,17 @@ class _PasswordFormState extends State<PasswordForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
       children: [
         const Header('Sign in'),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              shrinkWrap: true,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -530,7 +551,11 @@ class _PasswordFormState extends State<PasswordForm> {
                             );
                           }
                         },
-                        child: const Text('SIGN IN'),
+                        child: Text(
+                          'SIGN IN',
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),
+                        ),
                       ),
                       const SizedBox(width: 30),
                     ],
@@ -559,21 +584,16 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: _isSigningIn
-          ? const CircularProgressIndicator(
+    return _isSigningIn
+        ? const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            )
-          : StyledButton(
-              // style: ButtonStyle(
-              //   backgroundColor: MaterialStateProperty.all(Colors.grey),
-              //   shape: MaterialStateProperty.all(
-              //     RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(20),
-              //     ),
-              //   ),
-              // ),
+            ),
+          )
+        : Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+            child: StyledButton(
               onPressed: () async {
                 setState(() {
                   _isSigningIn = true;
@@ -581,6 +601,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
                 User? user = await AuthenticationGoogle.signInWithGoogle(
                     context: context);
+                _isSigningIn = false;
 
                 setState(() {
                   _isSigningIn = false;
@@ -590,26 +611,25 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   widget.googleSignIn;
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
-                    Image(
-                      image: AssetImage("assets/google_logo.png"),
-                      height: 20.0,
+              child: Row(
+                children: <Widget>[
+                  const Spacer(),
+                  const Image(
+                    image: AssetImage("assets/google_logo.png"),
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                          color: Theme.of(context).secondaryHeaderColor),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        'Sign in with Google',
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                ],
               ),
             ),
-    );
+          );
   }
 }

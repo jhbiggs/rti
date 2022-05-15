@@ -37,8 +37,8 @@ class ApplicationState extends ChangeNotifier {
     init();
   }
   Future<void> addAssignmentToList(RTIAssignment assignment) {
-    final db = FirebaseDatabase.instance
-        .ref('chesterton/assignments/'); // FireabaseFirestore.instance
+    final db = FirebaseDatabase.instance.ref(
+        Constants.googleSheetID); // FireabaseFirestore.instance
 
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
@@ -58,11 +58,11 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  // void _connectToFirebaseEmulator() {
-  //   FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
-  //   FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
-  //   FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
-  // }
+  void _connectToFirebaseEmulator() {
+    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
+    FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
+  }
 
 // here is where the Google sheets transfer happens
   List<StudentForm> _students = [];
@@ -86,7 +86,8 @@ class ApplicationState extends ChangeNotifier {
             });
         _loginState = ApplicationLoginState.loggedIn;
         final db = FirebaseDatabase.instance
-            .ref('1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1');
+            // .ref('chesterton');
+            .ref(Constants.googleSheetID);
         if (isTeacher) {
           _guestBookSubscription = db.onValue //FirebaseFirestore.instance
 
@@ -328,6 +329,7 @@ class ApplicationState extends ChangeNotifier {
       Role role,
       Subject subject,
       String password,
+      String schoolCode,
       void Function(FirebaseAuthException e) errorCallback) async {
     try {
       //Firebase auth function creates user, then adds display name

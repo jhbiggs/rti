@@ -64,9 +64,9 @@ class _StudentAssignmentState extends State<StudentAssignment> {
                   children: [
                     ListTile(
                       isThreeLine: true,
-                      title: Text('Standard'),
-                      subtitle:
-                          Text('a little about the purpose of the assignment'),
+                      title: const Text('Standard'),
+                      subtitle: const Text(
+                          'a little about the purpose of the assignment'),
                       onTap: () {},
                     ),
                     Padding(
@@ -74,12 +74,12 @@ class _StudentAssignmentState extends State<StudentAssignment> {
                       child: InkWell(
                         child: Column(
                           children: [
-                            Text('${widget.studentAssignment.assignmentName}'),
+                            Text(widget.studentAssignment.assignmentName),
                           ],
                         ),
                         onTap: () => {
                           // if ( canLaunch(widget.studentAssignment.assignmentName)){
-                          launch('${widget.studentAssignment.assignmentName}')
+                          launch(widget.studentAssignment.assignmentName)
                           // }
                         },
                       ),

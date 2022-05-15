@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
 
 import 'Model/Authentication/application_state.dart';
-import 'Model/Authentication/authentication.dart';
 import 'Model/subject.dart';
 import 'RTIAssignment/rti_assignment.dart';
 import 'RTIAssignment/rti_assignment_list.dart';
@@ -39,9 +37,10 @@ class RTIAssignmentsBySubject extends StatefulWidget {
 }
 
 class _RTIAssignmentsBySubjectState extends State<RTIAssignmentsBySubject> {
+  Subject subject = Subject.none;
   @override
   Widget build(BuildContext context) {
-    final subject = ModalRoute.of(context)!.settings.arguments as Subject;
+    subject = ModalRoute.of(context)?.settings.arguments as Subject;
 
     return Consumer<ApplicationState>(
         builder: (context, appState, _) => ListView(children: [

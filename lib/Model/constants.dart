@@ -12,11 +12,14 @@ import 'package:com.mindframe.rti/Parent/parent.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
 import 'package:com.mindframe.rti/Student/student.dart';
 import 'package:com.mindframe.rti/Model/Authentication/access_code_generator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'role.dart';
 import '../group.dart';
 
 class Constants {
+  static const String googleSheetID =
+      "1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1";
+  static const String googleAppScriptWebURL =
+      "https://script.google.com/macros/s/AKfycbz2e5FyQ7jqxBGXikiGQ2zdksg6OV22lqyBi035Vm1dyel3dwerA8QY-x1JcQyeZds/exec";
   static const int _classCountDefault = 30;
   static List<RTIAssignment> assignments = List.generate(
       50,
@@ -46,9 +49,8 @@ class Constants {
     //call the callable as a function and invoke it server-side
     final results = await listTeachersFunction();
     var userArray = List<Object?>.from(results.data['users']);
-    var resultsArray = [];
     userArray.forEach((value) {
-      print(value.toString());
+      // print(value.toString());
     });
     // for (Map<String, dynamic> user in userArray) {
     //   if (user['customClaims'] != null &&
