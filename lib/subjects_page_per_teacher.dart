@@ -42,7 +42,7 @@ class _SubjectsListPerTeacherState extends State<SubjectsListPerTeacher> {
   response from the database.  There is a check for null before sending 
   subjects*/
   void getSubjects() async {
-    final teacherListResult = await Constants.listTeachers();
+    final teacherListResult = await Constants.teachers;
     final tempList = teacherListResult;
     for (Map user in tempList) {
       if (user['customClaims']['subject'] != null) {

@@ -16,23 +16,14 @@ import 'role.dart';
 import '../group.dart';
 
 class Constants {
+  static const String schoolCode = "chesterton";
   static const String googleSheetID =
-      "1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1";
+      schoolCode + "/1bjrulMbs-oXz9154pwM3K3h7_JRMpbCh0v7J_o63jNU/Sheet1";
   static const String googleAppScriptWebURL =
-      "https://script.google.com/macros/s/AKfycbz2e5FyQ7jqxBGXikiGQ2zdksg6OV22lqyBi035Vm1dyel3dwerA8QY-x1JcQyeZds/exec";
+      "https://script.google.com/macros/s/AKfycbyOqXCRpcDosARkdH8Jt-k-naXqvPfOgLIFCxMxFflQLNBX-E0I8TE-QJ7g1DrZ5_4/exec";
   static const int _classCountDefault = 30;
-  static List<RTIAssignment> assignments = List.generate(
-      50,
-      (index) => RTIAssignment(
-          student: Student(
-              name: faker.person.name(), accessCode: getRandomString(5)),
-          standard: "Factoring Polynomials",
-          subject: "math",
-          startDate: DateTime.now(),
-          teacher: "Mrs. Highsmith",
-          assignmentName: "Problem Set A"));
-  static List<Parent> parents =
-      List.generate(30, (index) => Parent(name: faker.person.name()));
+  static List<RTIAssignment> assignments = [];
+
   static var subjects = SubjectExtension.names;
   static List<Group> groups = [];
   // teachers.map((element) => Group(element.subject, element)).toList();
@@ -49,22 +40,23 @@ class Constants {
     //call the callable as a function and invoke it server-side
     final results = await listTeachersFunction();
     var userArray = List<Object?>.from(results.data['users']);
-    userArray.forEach((value) {
-      // print(value.toString());
-    });
-    // for (Map<String, dynamic> user in userArray) {
-    //   if (user['customClaims'] != null &&
-    //       user['customClaims']['teacher'] == true) {
-    //     resultsArray.add(user);
-    //     print("Your user is ${user['customClaims']['subject'] ?? "nothing"} and"
-    //         " the username is ${user['displayName']}");
-    //   }
-    // }
+    for (var value in userArray) {
+      print(value.toString());
+    }
+    var resultsArray = [];
+    for (Map<String, dynamic> user in results.data['users']) {
+      if (user['customClaims'] != null &&
+          user['customClaims']['role'] == 'admin') {
+        resultsArray.add(user);
+        print("Your user is ${user['customClaims']['subject'] ?? "nothing"} and"
+            " the username is ${user['displayName']}");
+      }
+    }
     //return the listResult of all teacher users
-    return []; //resultsArray.toList();
+    return resultsArray.toList();
   }
 
-  static final faker = Faker();
+  // static final faker = Faker();
 
   static List<Student> studentTestList = List.generate(
       50,

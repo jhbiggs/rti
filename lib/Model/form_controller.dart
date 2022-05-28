@@ -13,8 +13,7 @@ an HTTP GET request on Google App Script Web URL, then parses the response and s
 the result */
 class FormController {
   // Google App Script Web URL
-  static const String rawUri =
-      Constants.googleAppScriptWebURL;
+  static const String rawUri = Constants.googleAppScriptWebURL;
   static Uri uRL = Uri.parse(rawUri);
 
   // Success status message
@@ -25,7 +24,6 @@ class FormController {
     return await http.get(uRL).then((response) {
       var jsonStudent = [];
       try {
-        print(response.body);
         jsonStudent = convert.jsonDecode(response.body) as List;
         print(jsonStudent);
       } catch (e) {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'Model/subject.dart';
 
-class GroupListScreen extends StatelessWidget {
-  const GroupListScreen({Key? key}) : super(key: key);
+class SubjectListScreen extends StatelessWidget {
+  const SubjectListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Groups'),
+          title: const Text('Subjects'),
         ),
         backgroundColor: Colors.grey[200],
         body: const Center(

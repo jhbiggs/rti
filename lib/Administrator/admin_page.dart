@@ -16,6 +16,24 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          flexibleSpace: Row(
+            children:  [
+               const Spacer(),
+               Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Column(
+                   children:  [
+                     const Spacer(),
+                     IconButton(
+                        icon: const Icon(Icons.settings), 
+                        onPressed: () async { await Navigator.of(context).pushNamed('/settings'); },
+                        ),
+                     const Spacer(),
+                   ],
+                 ),
+               ),
+            ],
+          ),
           title: const Text('Administrator/Office'),
         ),
         backgroundColor: Colors.grey[200],
@@ -53,12 +71,12 @@ class _AdminFormState extends State<AdminForm> {
   // final _assignmentsSheetController = TextEditingController();
 
   final List<List<String>> _adminCards = [
-    ['Groups', '/groups'],
+    ['Subjects', '/groups'],
     ['Teachers', '/teachers'],
     // ['Subjects', '/subjects'],
     ['All Students\' Assignments', '/students'],
     // ['RTI Assignments', '/rti_assignments'],
-    ['Choose your source...', '/file_picker'],
+    // ['Choose your source...', '/file_picker'],
     // ['Easy File Picker', '/easy_file_picker']
   ];
 

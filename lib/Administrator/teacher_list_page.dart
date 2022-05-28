@@ -45,18 +45,21 @@ class _TeachersListState extends State<TeachersList> {
 
 //async getTeachers comes from Constants file
   void getTeachers() async {
+
+    //take the google sheets roster and filter out the teachers
+
     //call Future and await result
     final teacherListResult = await Constants.teachers;
 
     final tempList = teacherListResult;
     for (Map user in tempList) {
       final String teacherName = user['displayName'];
-      final Subject teacherSubject = Subject.values.firstWhere((element) =>
-          const CaseInsensitiveEquality().equals(
-              element.name, ((user['customClaims']['subject']) as String)));
-      teacherList.add(Teacher(teacherName, teacherSubject, "HC110"));
+      // final Subject teacherSubject = Subject.values.firstWhere((element) =>
+      //     const CaseInsensitiveEquality().equals(
+      //         element.name, ((user['customClaims']['subject']) as String)));
+      teacherList.add(Teacher(teacherName, Subject.none, "HC110"));
     }
-    teacherList.sort((a, b) => a.subject.name.compareTo(b.subject.name));
+    teacherList.sort((a, b) => a.name.compareTo(b.name));
     setState(() {});
   }
 

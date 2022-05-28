@@ -70,13 +70,14 @@ class Authentication extends StatelessWidget {
           children: [
             Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30),
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 18),
               child: StyledButton(
                 onPressed: () {
                   startLoginFlow();
                 },
                 child: Text('Sign In/Sign Up',
                     style: TextStyle(
+                      fontSize: 16.0,
                       color: Theme.of(context).secondaryHeaderColor,
                     )),
               ),
@@ -90,6 +91,9 @@ class Authentication extends StatelessWidget {
 
       case ApplicationLoginState.emailAddress:
         return EmailForm(
+            cancel: () {
+              signOut();
+            },
             callback: (email) => verifyEmail(
                 email, (e) => _showErrorDialog(context, 'Invalid email', e)));
       case ApplicationLoginState.password:
@@ -102,7 +106,9 @@ class Authentication extends StatelessWidget {
                   (e) => _showErrorDialog(context, 'Failed to sign in', e),
                   context);
             },
-            context: context);
+            context: context,
+            cancel: signOut,              
+            );
       case ApplicationLoginState.register:
         return RegisterFormGeneral(
           email: email!,
@@ -186,8 +192,9 @@ class Authentication extends StatelessWidget {
 }
 
 class EmailForm extends StatefulWidget {
-  const EmailForm({required this.callback});
+  const EmailForm({required this.callback, required this.cancel});
   final void Function(String email) callback;
+  final void Function() cancel;
   @override
   _EmailFormState createState() => _EmailFormState();
 }
@@ -201,31 +208,30 @@ class _EmailFormState extends State<EmailForm> {
     return ListView(
       shrinkWrap: true,
       children: [
-        const Padding(
-          padding:  EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0.0),
-          child:  Header('Sign in with email'),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0.0),
+          child: Text('Sign in with Email',
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.headline5),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(18.0),
           child: Form(
             key: _formKey,
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  child: TextFormField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email',
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter your email address to continue';
-                      }
-                      return null;
-                    },
+                TextFormField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your email',
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Enter your email address to continue';
+                    }
+                    return null;
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -233,13 +239,28 @@ class _EmailFormState extends State<EmailForm> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 30),
-                      child: StyledButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            widget.callback(_controller.text);
-                          }
-                        },
-                        child: const Text('NEXT'),
+                      child: Row(
+                        children: [
+                          // const Spacer(),
+                          StyledButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                widget.callback(_controller.text);
+                              }
+                            },
+                            child:  Text('NEXT',
+                            style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),),
+                          ),
+                          StyledButton(
+                            onPressed: () async {
+                              widget.cancel();
+                            },
+                            child: Text('CANCEL',
+                            style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -436,9 +457,11 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TextButton(
+                      StyledButton(
                         onPressed: widget.cancel,
-                        child: const Text('CANCEL'),
+                        child: Text('CANCEL',
+                        style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),),
                       ),
                       const SizedBox(width: 16),
                       StyledButton(
@@ -453,7 +476,9 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
                                 _schoolCodeController.text);
                           }
                         },
-                        child: const Text('SAVE'),
+                        child:  Text('SAVE',
+                        style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),),
                       ),
                       const SizedBox(width: 30),
                     ],
@@ -470,11 +495,15 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
 
 class PasswordForm extends StatefulWidget {
   const PasswordForm(
-      {required this.login, required this.email, required this.context});
+      {required this.login,
+      required this.email,
+      required this.context,
+      required this.cancel});
   final String email;
   final void Function(String email, String password, BuildContext context)
       login;
   final BuildContext context;
+  final void Function() cancel;
   @override
   _PasswordFormState createState() => _PasswordFormState();
 }
@@ -495,7 +524,10 @@ class _PasswordFormState extends State<PasswordForm> {
     return ListView(
       shrinkWrap: true,
       children: [
-        const Header('Sign in'),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Header('Sign in'),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
@@ -557,6 +589,16 @@ class _PasswordFormState extends State<PasswordForm> {
                               color: Theme.of(context).secondaryHeaderColor),
                         ),
                       ),
+                      StyledButton(
+                        onPressed: () {
+                          widget.cancel();
+                        },
+                        child: Text(
+                          'CANCEL',
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor),
+                        ),
+                      ),
                       const SizedBox(width: 30),
                     ],
                   ),
@@ -584,52 +626,61 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   Widget build(BuildContext context) {
-    return _isSigningIn
-        ? const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-            child: StyledButton(
-              onPressed: () async {
-                setState(() {
-                  _isSigningIn = true;
-                });
-
-                User? user = await AuthenticationGoogle.signInWithGoogle(
-                    context: context);
-                _isSigningIn = false;
-
-                setState(() {
-                  _isSigningIn = false;
-                });
-
-                if (user != null) {
-                  widget.googleSignIn;
-                }
-              },
-              child: Row(
-                children: <Widget>[
+    return Builder(
+        builder: (context) => _isSigningIn
+            ? Row(
+                children: [
                   const Spacer(),
-                  const Image(
-                    image: AssetImage("assets/google_logo.png"),
-                    height: 20.0,
-                  ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      'Sign in with Google',
-                      style: TextStyle(
-                          color: Theme.of(context).secondaryHeaderColor),
+                    padding: const EdgeInsets.only(bottom: 2.0),
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.red.shade900),
                     ),
                   ),
                   const Spacer(),
                 ],
-              ),
-            ),
-          );
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                child: StyledButton(
+                  onPressed: () async {
+                    setState(() {
+                      _isSigningIn = true;
+                    });
+
+                    User? user = await AuthenticationGoogle.signInWithGoogle(
+                        context: context);
+                    _isSigningIn = false;
+
+                    setState(() {
+                      _isSigningIn = false;
+                    });
+
+                    if (user != null) {
+                      widget.googleSignIn;
+                    }
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      const Spacer(),
+                      const Image(
+                        image: AssetImage("assets/google_logo.png"),
+                        height: 32.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Google Authentication',
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).secondaryHeaderColor),
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              ));
   }
 }

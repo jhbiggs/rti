@@ -57,6 +57,7 @@ dependencies:
   url_launcher: ^6.0.20
   google_sign_in: ^5.2.4
   googleapis: ^8.1.0
+  web_socket_channel: ^2.2.0
 
 dev_dependencies:
   flutter_test:

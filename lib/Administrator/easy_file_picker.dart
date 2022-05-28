@@ -46,7 +46,7 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
       fileToUpload,
       // uploadMedia: ga.Media(file!, file.lengthSync()),
     );
-    print(response);
+    // print(response);
     _listGoogleDriveFiles();
   }
 

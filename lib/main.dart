@@ -1,4 +1,5 @@
 import 'package:com.mindframe.rti/Administrator/easy_file_picker.dart';
+import 'package:com.mindframe.rti/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:com.mindframe.rti/Administrator/student_assignment_screen.dart';
 import 'package:com.mindframe.rti/Administrator/admin_teacher_roster_page.dart';
@@ -8,8 +9,8 @@ import 'package:com.mindframe.rti/role_page.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
 import 'package:com.mindframe.rti/Student/student_page.dart';
 import 'package:com.mindframe.rti/rti_assignments_page_by_subject.dart';
-import 'package:com.mindframe.rti/subjects_page_per_teacher.dart';
 import 'package:com.mindframe.rti/Administrator/teacher_list_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'Administrator/admin_page.dart';
 import 'Model/Authentication/application_state.dart';
@@ -20,13 +21,11 @@ import 'group_list_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  // runApp(const MyApp());
   runApp(
     ChangeNotifierProvider(
         create: (context) => ApplicationState(),
         builder: (context, _) => const SignUpApp()),
   );
-
 }
 
 class SignUpApp extends StatelessWidget {
@@ -41,6 +40,7 @@ class SignUpApp extends StatelessWidget {
           highlightColor: Colors.amber.shade100),
       routes: {
         '/': (context) => const SignUpScreen(),
+        '/settings': (context) => const SettingsScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         '/role': (context) => const RoleScreen(),
         '/parent': (context) => const ParentScreen(),
@@ -48,9 +48,9 @@ class SignUpApp extends StatelessWidget {
         '/admin': (context) => const AdminScreen(),
         '/student': (context) => const StudentScreen(),
         '/students': (context) => const RTIAssignmentsScreen(),
-        '/groups': (context) => const GroupListScreen(),
+        '/groups': (context) => const SubjectListScreen(),
         '/teachers': (context) => const TeachersScreen(),
-        '/subjects': (context) => const SubjectsScreen(),
+        // '/subjects': (context) => const SubjectsScreen(),
         '/subject_group_list_page': (context) =>
             const RTIAssignmentsScreenBySubject(),
         '/rti_assignments': (context) => const RTIAssignmentsScreen(),
@@ -69,6 +69,7 @@ class SignUpApp extends StatelessWidget {
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,12 +87,15 @@ class SignUpScreen extends StatelessWidget {
           ),
           const Spacer(),
           Row(
-            children: const [
-              Spacer(),
+            children: [
+              const Spacer(),
               Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.info,
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {
+                    launch("https://www.rtiprivacypolicy.com");
+                  },
+                  icon: const Icon(Icons.info),
                 ),
               ),
             ],
@@ -126,7 +130,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _pushRelevantPage() async {
     print("going into main userdata switch");
-    await Constants.listTeachers();
+    await Constants.teachers;
 
     switch (UserData.role) {
       case Role.student:
@@ -136,8 +140,8 @@ class _SignUpFormState extends State<SignUpForm> {
         break;
       case Role.teacher:
         print('role is teacher');
-
-        await Navigator.of(context).pushNamed('/teacher');
+/*currently there is no difference between the teacher and the admin page.*/
+        await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.administrator:
         print('role is admin');
@@ -168,8 +172,9 @@ class _SignUpFormState extends State<SignUpForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('RTI',
+            
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline4),
+                style: Theme.of(context).textTheme.headline3),
             Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(

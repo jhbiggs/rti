@@ -20,8 +20,8 @@ class StudentForm {
   StudentForm(this.studentName, this.subject, this.standard, this.assignment);
 
   factory StudentForm.fromJson(dynamic json) {
-    return StudentForm('${json['name']}', '${json['subject']}',
-        '${json['standard']}', '${json['assignment']}');
+    return StudentForm('${json['name']}','${json['subject']}', 
+       '${json['standard']}', '${json['assignment']}', );
   }
 
   // method to make get parameters

@@ -8,6 +8,7 @@ import 'dart:async';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:com.mindframe.rti/Model/form_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -19,7 +20,6 @@ import 'package:com.mindframe.rti/Model/subject.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
 import 'package:com.mindframe.rti/Student/student.dart';
 import '../constants.dart';
-import '../student_form.dart';
 import 'authentication.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -27,6 +27,7 @@ import 'package:firebase_database/firebase_database.dart';
 class ApplicationState extends ChangeNotifier {
   var isTeacher = false;
   var isAdmin = false;
+  var _schoolCode = "";
 
   /* we need to switch sometimes from Firestore to the Realtime Database.
   At this time I don't see a good way to sync Google Sheets with the 
@@ -37,9 +38,9 @@ class ApplicationState extends ChangeNotifier {
     init();
   }
   Future<void> addAssignmentToList(RTIAssignment assignment) {
-    final db = FirebaseDatabase.instance.ref(
-        Constants.googleSheetID); // FireabaseFirestore.instance
-
+    final db = FirebaseDatabase.instance
+        // .ref(Constants.googleSheetID);
+        .ref("chesterton1");
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
     }
@@ -62,16 +63,16 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseFirestore.instance.useFirestoreEmulator("localhost", 8080);
     FirebaseFunctions.instance.useFunctionsEmulator("localhost", 5001);
+    FirebaseDatabase.instance.useDatabaseEmulator("localhost", 9000);
   }
 
 // here is where the Google sheets transfer happens
-  List<StudentForm> _students = [];
   Future<void> init() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    // _connectToFirebaseEmulator();
+    _connectToFirebaseEmulator();
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         var resultForClaims = user.getIdTokenResult();
@@ -79,67 +80,89 @@ class ApplicationState extends ChangeNotifier {
         await resultForClaims.then((result) => {
               if (result.claims != null)
                 {
-                  isTeacher = result.claims!['teacher'] ?? false,
+                  isTeacher = result.claims!['role'] == 'teacher',
                   teacherSubject = result.claims!['subject'] ?? 'no subject',
-                  isAdmin = result.claims!['admin'] ?? false,
+                  isAdmin = result.claims!['role'] == 'admin',
+                  _schoolCode = result.claims!['schoolCode'],
                 }
             });
         _loginState = ApplicationLoginState.loggedIn;
-        final db = FirebaseDatabase.instance
-            // .ref('chesterton');
-            .ref(Constants.googleSheetID);
+        // final db = FirebaseDatabase.instance
+        //     .ref('chesterton1');
+        // .ref(Constants.googleSheetID);
         if (isTeacher) {
-          _guestBookSubscription = db.onValue //FirebaseFirestore.instance
+          FormController formController = FormController();
+          var studentList = await formController.getStudentList();
+          for (var element in studentList) {
+            _guestBookMessages.add(RTIAssignment(
+                standard: element.standard,
+                student:
+                    Student(name: element.studentName, accessCode: 'abc123'),
+                subject: element.subject,
+                startDate: DateTime.now(),
+                assignmentName: element.assignment));
+          }
+          // _guestBookSubscription = db.onValue //FirebaseFirestore.instance
 
-              // .collection('assignments')
-              // .where('subject', isEqualTo: teacherSubject)
-              // .orderBy('timestamp', descending: true)
-              // .snapshots()
-              .listen((event) {
-            _guestBookMessages = [];
-            for (final document in event.snapshot.children.where((element) =>
-                element.child('subject').value == teacherSubject)) {
-              _guestBookMessages.add(
-                RTIAssignment(
-                    assignmentName:
-                        document.child('assignment').value.toString(),
-                    standard: document.child('standard').value.toString(),
-                    student: Student(
-                        name: document.child('student_name').value.toString(),
-                        accessCode: ''), //TODO:implement getting access code
-                    subject: document.child('subject').value.toString(),
-                    teacher: document.child('teacher').value.toString(),
-                    startDate: DateTime.now()),
-              );
-            }
+          //     // .collection('assignments')
+          //     // .where('subject', isEqualTo: teacherSubject)
+          //     // .orderBy('timestamp', descending: true)
+          //     // .snapshots()
+          //     .listen((event) {
+          //   _guestBookMessages = [];
+          //   for (final document in event.snapshot.children.where((element) =>
+          //       element.child('subject').value == teacherSubject)) {
+          //     _guestBookMessages.add(
+          //       RTIAssignment(
+          //           assignmentName:
+          //               document.child('assignment').value.toString(),
+          //           standard: document.child('standard').value.toString(),
+          //           student: Student(
+          //               name: document.child('student_name').value.toString(),
+          //               accessCode: ''), //TODO:implement getting access code
+          //           subject: document.child('subject').value.toString(),
+          //           teacher: document.child('teacher').value.toString(),
+          //           startDate: DateTime.now()),
+          //     );
+          //   }
 
-            notifyListeners();
-          });
+          //   notifyListeners();
+          // });
         }
         if (isAdmin) {
           //get the list of all assignments
-          _guestBookSubscription = db.onValue //FirebaseFirestore.instance
-              // .collection('assignments')
-              // .orderBy('timestamp', descending: true)
-              // .snapshots()
-              .listen((event) {
-            _guestBookMessages = [];
-            for (final document in event.snapshot.children) {
-              _guestBookMessages.add(
-                RTIAssignment(
-                    assignmentName:
-                        document.child('assignment').value.toString(),
-                    standard: document.child('standard').value.toString(),
-                    student: Student(
-                        name: document.child('student_name').value.toString(),
-                        accessCode: ''), //TODO:implement getting access code
-                    subject: document.child('subject').value.toString(),
-                    teacher: document.child('teacher').value.toString(),
-                    startDate: DateTime.now()),
-              );
-            }
-            notifyListeners();
-          });
+          // _guestBookSubscription = db.onValue //FirebaseFirestore.instance
+          //     // .collection('assignments')
+          //     // .orderBy('timestamp', descending: true)
+          //     // .snapshots()
+          //     .listen((event) {
+          FormController formController = FormController();
+          var studentList = await formController.getStudentList();
+          for (var element in studentList) {
+            _guestBookMessages.add(RTIAssignment(
+                standard: element.standard,
+                student:
+                    Student(name: element.studentName, accessCode: 'abc123'),
+                subject: element.subject,
+                startDate: DateTime.now(),
+                assignmentName: element.assignment));
+          }
+          // for (final document in event.snapshot.children) {
+          //   _guestBookMessages.add(
+          //     RTIAssignment(
+          //         assignmentName:
+          //             document.child('assignment').value.toString(),
+          //         standard: document.child('standard').value.toString(),
+          //         student: Student(
+          //             name: document.child('student_name').value.toString(),
+          //             accessCode: ''), //TODO:implement getting access code
+          //         subject: document.child('subject').value.toString(),
+          //         teacher: document.child('teacher').value.toString(),
+          //         startDate: DateTime.now()),
+          //   );
+          // }
+          notifyListeners();
+          // });
         }
       } else {
         _loginState = ApplicationLoginState.loggedOut;
@@ -160,6 +183,7 @@ class ApplicationState extends ChangeNotifier {
 
   StreamSubscription<DatabaseEvent>? _guestBookSubscription;
   List<RTIAssignment> _guestBookMessages = [];
+
   List<RTIAssignment> get guestBookMessages => _guestBookMessages;
 
   void startLoginFlow() {
@@ -378,6 +402,7 @@ class ApplicationState extends ChangeNotifier {
   void signOut() {
     FirebaseAuth.instance.signOut();
     _loginState = ApplicationLoginState.loggedOut;
+    notifyListeners();
     // UserData.administrator = false;
     // UserData.teacher = false;
     // UserData.subject = null;

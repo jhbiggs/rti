@@ -59,10 +59,10 @@ class StyledButton extends StatelessWidget {
           textStyle: const TextStyle(color: Colors.amber),
           side: BorderSide(color: Theme.of(context).dividerColor),
           // backgroundColor: Colors.grey,
-          elevation: 5.0,
-          // shape: RoundedRectangleBorder(
-          //   borderRadius: BorderRadius.circular(20),
-          // ),
+          elevation: 10.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
         onPressed: onPressed,
         child: child,

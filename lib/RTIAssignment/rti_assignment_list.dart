@@ -72,10 +72,9 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
     FormController formController = FormController();
 
     _showSnackbar("Submitting Assignment");
-
     // Submit 'feedbackForm' and save it in Google Sheets.
     formController.submitForm(feedbackForm, (String response) {
-      print("Response: $response");
+      // print("Response: $response");
       if (response == FormController.STATUS_SUCCESS) {
         // Feedback is saved succesfully in Google Sheets.
         _showSnackbar("Assignment Submitted");
@@ -98,7 +97,7 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         const Padding(
+        const Padding(
           padding: EdgeInsets.all(8.0),
           child: Header("Your List"),
         ),
@@ -265,7 +264,6 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
               _standardTextController.clear();
               _assignmentTextController.clear();
             }),
-       
       ],
     );
   }
