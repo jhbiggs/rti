@@ -2,7 +2,7 @@ import 'package:http/io_client.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleHttpClient extends IOClient {
-  Map<String, String> _headers;
+  final Map<String, String> _headers;
   GoogleHttpClient(this._headers) : super();
 
   @override

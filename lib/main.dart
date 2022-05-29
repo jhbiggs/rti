@@ -11,7 +11,6 @@ import 'package:com.mindframe.rti/Student/student_page.dart';
 import 'package:com.mindframe.rti/rti_assignments_page_by_subject.dart';
 import 'package:com.mindframe.rti/Administrator/teacher_list_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'Administrator/admin_page.dart';
 import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';
@@ -129,34 +128,28 @@ class _SignUpFormState extends State<SignUpForm> {
   Role dropdownValue = Role.teacher;
 
   void _pushRelevantPage() async {
-    print("going into main userdata switch");
     await Constants.teachers;
 
     switch (UserData.role) {
       case Role.student:
-        print('role is student');
 
         await Navigator.of(context).pushNamed('/student');
         break;
       case Role.teacher:
-        print('role is teacher');
 /*currently there is no difference between the teacher and the admin page.*/
         await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.administrator:
-        print('role is admin');
 
         await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.parent:
-        print('role is parent');
 
         await Navigator.of(context).pushNamed('/parent');
         break;
       // }
       case Role.none:
         // TODO: Handle this case.
-        print('no user role defined');
         break;
     }
   }

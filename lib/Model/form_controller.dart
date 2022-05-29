@@ -25,9 +25,9 @@ class FormController {
       var jsonStudent = [];
       try {
         jsonStudent = convert.jsonDecode(response.body) as List;
-        print(jsonStudent);
+        // print(jsonStudent);
       } catch (e) {
-        print("ERROR!! $e");
+        // print("ERROR!! $e");
       }
       return jsonStudent.map((json) => StudentForm.fromJson(json)).toList();
     });
@@ -47,7 +47,7 @@ class FormController {
         }
       });
     } catch (e) {
-      print('your error is ${e.toString()}');
+      // print('your error is ${e.toString()}');
     }
   }
 }

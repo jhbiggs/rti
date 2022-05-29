@@ -44,25 +44,31 @@ class _RTIAssignmentsState extends State<RTIAssignments> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Column(children: [
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (appState.loginState == ApplicationLoginState.loggedIn) ...[
-                  RtIAssignmentList(
-                    addAssignment: (assignment) =>
-                        appState.addAssignmentToList(assignment),
-                    assignments: appState.guestBookMessages,
-                  ),
+    return Scaffold(
+     
+      body: ListView(
+        children: [
+          Column(children: [
+            Consumer<ApplicationState>(
+              builder: (context, appState, _) => 
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (appState.loginState ==
+                      ApplicationLoginState.loggedIn) ...[
+                    RtIAssignmentList(
+                      addAssignment: (assignment) =>
+                          appState.addAssignmentToList(assignment),
+                      assignments: appState.guestBookMessages,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ]),
-      ],
+          ]),
+        ],
+      ),
+    
     );
   }
 }

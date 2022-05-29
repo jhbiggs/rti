@@ -41,7 +41,7 @@ class Constants {
     final results = await listTeachersFunction();
     var userArray = List<Object?>.from(results.data['users']);
     for (var value in userArray) {
-      print(value.toString());
+      // print(value.toString());
     }
     var resultsArray = [];
     for (Map<String, dynamic> user in results.data['users']) {

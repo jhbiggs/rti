@@ -70,7 +70,7 @@ class Authentication extends StatelessWidget {
           children: [
             Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 18),
+                  const EdgeInsets.symmetric(vertical: 0, horizontal: 18),
               child: StyledButton(
                 onPressed: () {
                   startLoginFlow();

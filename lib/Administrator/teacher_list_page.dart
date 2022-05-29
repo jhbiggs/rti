@@ -3,7 +3,6 @@
  *
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:com.mindframe.rti/Model/subject.dart';
 import 'package:com.mindframe.rti/Teacher/teacher.dart';
@@ -88,7 +87,6 @@ class _TeachersListState extends State<TeachersList> {
             elevation: 5,
             child: ListTile(
                 onTap: () {
-                  print('list tile tapped.');
                   _pushTeacherRoster(teacherList.elementAt(index));
                 },
                 leading: const Icon(Icons.person),

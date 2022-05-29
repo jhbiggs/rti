@@ -132,10 +132,9 @@ async function grantSubject(user:admin.auth.UserRecord, subject:string) {
 
 exports.listAllUsers = functions.https.onCall((data, context)=>{
   // List batch of users, 1000 at a time.
-  if (context.auth?.uid == null)
-  {
-     console.log("sorry, pal, you're not authenticated with us yet.")
-   }
+  if (context.auth?.uid == null) {
+    console.log("sorry, pal, you're not authenticated with us yet.");
+  }
   const returnValue = auth().listUsers(1000);
   returnValue
       .then((listUsersResult) => {

@@ -1,11 +1,9 @@
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as ga;
-import 'package:http/io_client.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
@@ -22,7 +20,6 @@ class EasyFilePicker extends StatefulWidget {
 
 class _EasyFilePickerState extends State<EasyFilePicker> {
   // final storage = FlutterSecureStorage();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn =
       GoogleSignIn(scopes: ['https://www.googleapis.com/auth/drive.appdata']);
   late GoogleSignInAccount googleSignInAccount;
@@ -36,16 +33,10 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
   }
 
   _uploadFileToGoogleDrive() async {
-    var client = GoogleHttpClient(await googleSignInAccount.authHeaders);
-    var drive = ga.DriveApi(client);
     ga.File fileToUpload = ga.File();
     var file = await FilePicker.platform.pickFiles();
     fileToUpload.parents = ["appDataFolder"];
     fileToUpload.name = path.basename(file?.paths.first ?? "nothing");
-    var response = await drive.files.create(
-      fileToUpload,
-      // uploadMedia: ga.Media(file!, file.lengthSync()),
-    );
     // print(response);
     _listGoogleDriveFiles();
   }
@@ -58,17 +49,11 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
         list = value;
       });
       for (var i = 0; i < list.files!.length; i++) {
-        print("Id: ${list.files![i].id} File Name:${list.files![i].name}");
       }
     });
   }
 
   Future<void> _downloadGoogleDriveFile(String fName, String gdID) async {
-    var client = GoogleHttpClient(await googleSignInAccount.authHeaders);
-    var drive = ga.DriveApi(client);
-    ga.Media? file = (await drive.files
-        .get(gdID, downloadOptions: ga.DownloadOptions.fullMedia)) as ga.Media?;
-    print(file!.stream);
 
     // final directory = await getExternalStorageDirectory();
     // print(directory.path);
@@ -93,23 +78,22 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
       for (var i = 0; i < list.files!.length; i++) {
         listItem.add(Row(
           children: <Widget>[
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.05,
               child: Text('${i + 1}'),
             ),
             Expanded(
               child: Text(list.files![i].name ?? "nothing2"),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.3,
-              child: FlatButton(
-                child: Text(
+              child: TextButton(
+                child: const Text(
                   'Download',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
-                color: Colors.indigo,
                 onPressed: () {
                   _downloadGoogleDriveFile(list.files![i].name ?? "nothing3",
                       list.files![i].id ?? "nothing4");
@@ -134,17 +118,15 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             (signedIn
-                ? FlatButton(
-                    child: Text('Upload File to Google Drive'),
+                ? TextButton(
+                    child: const Text('Upload File to Google Drive'),
                     onPressed: _uploadFileToGoogleDrive,
-                    color: Colors.green,
                   )
                 : Container()),
             (signedIn
-                ? FlatButton(
-                    child: Text('List Google Drive Files'),
+                ? TextButton(
+                    child: const Text('List Google Drive Files'),
                     onPressed: _listGoogleDriveFiles,
-                    color: Colors.green,
                   )
                 : Container()),
             (signedIn
@@ -156,17 +138,15 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
                   )
                 : Container()),
             (signedIn
-                ? FlatButton(
-                    child: Text('Google Logout'),
+                ? TextButton(
+                    child: const Text('Google Logout'),
                     onPressed: () {},
-                    color: Colors.green,
                   )
-                : FlatButton(
-                    child: Text('Google Login'),
+                : TextButton(
+                    child: const Text('Google Login'),
                     onPressed: () {
                       ApplicationState.signInWithGoogle(context: context);
                     },
-                    color: Colors.red,
                   )),
             Consumer<ApplicationState>(
               builder: (context, appState, _) => Authentication(

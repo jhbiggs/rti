@@ -14,6 +14,7 @@ import 'package:com.mindframe.rti/widgets.dart';
 import '../Administrator/student_assignment_screen.dart';
 import '../Model/form_controller.dart';
 import '../Model/student_form.dart';
+import '../Model/subject.dart';
 import '../Student/student.dart';
 import '../Model/constants.dart';
 
@@ -26,11 +27,15 @@ class RtIAssignmentMessage {
 }
 
 class RtIAssignmentList extends StatefulWidget {
-  const RtIAssignmentList(
-      {Key? key, required this.addAssignment, required this.assignments})
+  RtIAssignmentList(
+      {Key? key,
+      required this.addAssignment,
+      required this.assignments,
+      this.subject})
       : super(key: key);
   final FutureOr<void> Function(RTIAssignment assignment) addAssignment;
-  final List<RTIAssignment> assignments;
+  List<RTIAssignment> assignments;
+  Subject? subject;
 
   @override
   _RtIAssignmentListState createState() => _RtIAssignmentListState();
@@ -46,6 +51,14 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
   final _subjectBoxController = BoxController();
   final _subjectSuggestions = Constants.subjects;
   late Student _selectedStudent;
+  @override
+  void initState() {
+    super.initState();
+    widget.assignments.sort((a, b) => a.student
+        .getName()
+        .toLowerCase()
+        .compareTo(b.student.getName().toLowerCase()));
+  }
 
   void _pushStudentAssignmentPage(RTIAssignment assignment) {
     /* The student assignment page shows the assignment from the Google
@@ -92,14 +105,64 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  _refreshList() async {
+    var formController = FormController();
+
+    await formController.getStudentList().then((value) => {
+          widget.assignments = [],
+          for (var element in value)
+            {
+              if (widget.subject != null)
+                {
+                  if (element.subject == widget.subject!.name)
+                    {
+                      widget.assignments.add(RTIAssignment(
+                          standard: element.standard,
+                          student: Student(
+                              name: element.studentName, accessCode: 'abc123'),
+                          subject: element.subject,
+                          startDate: DateTime.now(),
+                          assignmentName: element.assignment)),
+                    }
+                }
+              else
+                {
+                  widget.assignments.add(RTIAssignment(
+                      standard: element.standard,
+                      student: Student(
+                          name: element.studentName, accessCode: 'abc123'),
+                      subject: element.subject,
+                      startDate: DateTime.now(),
+                      assignmentName: element.assignment))
+                }
+            }
+        });
+    widget.assignments.sort(
+      (a, b) => a.student.getName().compareTo(b.student.getName()),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Header("Your List"),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              const Header("Your List"),
+              const Spacer(),
+              TextButton(
+                onPressed: _refreshList,
+                child: Icon(
+                  Icons.refresh,
+                  color: Theme.of(context).highlightColor,
+                ),
+              )
+            ],
+          ),
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -244,26 +307,46 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
                   },
                 ),
               ),
-              const Icon(Icons.send),
+              Icon(
+                Icons.send,
+                color: Theme.of(context).highlightColor,
+              ),
               const SizedBox(width: 8),
-              const Text('SEND')
+              Text(
+                'SEND',
+                style: TextStyle(color: Theme.of(context).highlightColor),
+              )
             ]),
             onPressed: () async {
               _submitForm();
-              // await widget.addAssignment(RTIAssignment(
-              //     /*TODO: get the teacher name from the userInfo and add it to the assignment
-              //   Must have a model on the server checking the number of students already
-              //   in the class.*/
-              //     student: _selectedStudent,
-              //     subject: _subjectTextController.text,
-              //     standard: _standardTextController.text,
-              //     assignmentName: _assignmentTextController.text,
-              //     startDate: DateTime.now()));
+
               _subjectTextController.clear();
               _nameTextController.clear();
               _standardTextController.clear();
               _assignmentTextController.clear();
+              setState(() {});
             }),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+              child: TextButton(
+                  onPressed: () => _refreshList(),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        Text(
+                          "Refresh",
+                          style: TextStyle(
+                              color: Theme.of(context).highlightColor),
+                        ),
+                        Icon(Icons.refresh,
+                            color: Theme.of(context).highlightColor),
+                        const Spacer(),
+                      ],
+                    ),
+                  ))),
+        ),
       ],
     );
   }

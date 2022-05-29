@@ -49,6 +49,7 @@ class _RTIAssignmentsBySubjectState extends State<RTIAssignmentsBySubject> {
                     .where((element) => element.subject == subject.name)
                     .toList(),
                 addAssignment: (RTIAssignment assignment) {},
+                subject: subject,
               ),
             ]));
   }

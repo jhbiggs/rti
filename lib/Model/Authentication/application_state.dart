@@ -27,7 +27,6 @@ import 'package:firebase_database/firebase_database.dart';
 class ApplicationState extends ChangeNotifier {
   var isTeacher = false;
   var isAdmin = false;
-  var _schoolCode = "";
 
   /* we need to switch sometimes from Firestore to the Realtime Database.
   At this time I don't see a good way to sync Google Sheets with the 
@@ -66,24 +65,35 @@ class ApplicationState extends ChangeNotifier {
     FirebaseDatabase.instance.useDatabaseEmulator("localhost", 9000);
   }
 
+  Future<void> refreshList() async {
+    var formController = FormController();
+    var studentList = await formController.getStudentList();
+    for (var element in studentList) {
+      _guestBookMessages.add(RTIAssignment(
+          standard: element.standard,
+          student: Student(name: element.studentName, accessCode: 'abc123'),
+          subject: element.subject,
+          startDate: DateTime.now(),
+          assignmentName: element.assignment));
+    }
+  }
+
 // here is where the Google sheets transfer happens
   Future<void> init() async {
+    print("init called");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    _connectToFirebaseEmulator();
+    // _connectToFirebaseEmulator();
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
         var resultForClaims = user.getIdTokenResult();
-        String teacherSubject = "";
         await resultForClaims.then((result) => {
               if (result.claims != null)
                 {
                   isTeacher = result.claims!['role'] == 'teacher',
-                  teacherSubject = result.claims!['subject'] ?? 'no subject',
                   isAdmin = result.claims!['role'] == 'admin',
-                  _schoolCode = result.claims!['schoolCode'],
                 }
             });
         _loginState = ApplicationLoginState.loggedIn;
@@ -213,7 +223,6 @@ class ApplicationState extends ChangeNotifier {
 //duplicate method, need a way to consolidate into the main method's
 //identical version
   void _pushRelevantPage(BuildContext context) async {
-    print("going into application state userdata switch");
     switch (UserData.role) {
       case Role.student:
         await Navigator.of(context).pushNamed('/student');
@@ -246,7 +255,6 @@ class ApplicationState extends ChangeNotifier {
 
   static void signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
 
     if (kIsWeb) {
       GoogleAuthProvider authProvider = GoogleAuthProvider();
@@ -254,8 +262,6 @@ class ApplicationState extends ChangeNotifier {
       try {
         final UserCredential userCredential =
             await auth.signInWithPopup(authProvider);
-
-        user = userCredential.user;
       } catch (e) {
         print("Found an error! $e");
       }
@@ -274,12 +280,7 @@ class ApplicationState extends ChangeNotifier {
           idToken: googleSignInAuthentication.idToken,
         );
 
-        try {
-          final UserCredential userCredential =
-              await auth.signInWithCredential(credential);
-
-          user = userCredential.user;
-        } on FirebaseAuthException catch (e) {
+        try {} on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             ScaffoldMessenger.of(context).showSnackBar(
               customSnackBar(
@@ -327,7 +328,6 @@ class ApplicationState extends ChangeNotifier {
             const CaseInsensitiveEquality()
                 .equals(element.name, ((result.claims!['subject'] as String))));
         UserData.role = Role.teacher;
-        print(UserData.role.toString());
         _pushRelevantPage(context);
       }
       if (result.claims != null &&
