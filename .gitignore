@@ -95,3 +95,5 @@ rti.xcworkspace/xcuserdata/justinbiggs.xcuserdatad/UserInterfaceState.xcuserstat
 android/app/src/profile/AndroidManifest.xml
 android/build.gradle
 pubspec.yaml
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.cc
