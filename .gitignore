@@ -45,6 +45,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 <<<<<<< HEAD
+<<<<<<< HEAD
 lib/firebase_options.dart
 android/build.gradle
 android/app/src/main/AndroidManifest.xml

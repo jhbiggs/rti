@@ -619,6 +619,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.5.0"
+<<<<<<< HEAD
   web_socket_channel:
     dependency: "direct main"
     description:
