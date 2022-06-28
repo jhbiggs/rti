@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'Model/Authentication/application_state.dart';
+import 'Model/constants.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -30,6 +34,8 @@ class SettingsForm extends StatefulWidget {
 
 class _SettingsFormState extends State<SettingsForm> {
   bool _toggled = false;
+  final TextEditingController _textFieldController =
+      TextEditingController(text: Constants.googleAppScriptWebURL);
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
@@ -40,23 +46,24 @@ class _SettingsFormState extends State<SettingsForm> {
         },
         title: const Text("Change Password?"),
       ),
-      SwitchListTile(
-        title: const Text("Notifications on/off"),
-        value: _toggled,
-        onChanged: (bool value) => {
-          setState(() => _toggled = value),
-        },
-      ),
-      ListTile(
-        title: Text("Google Sheet ID"),
-        subtitle:  TextField(
+      Consumer<ApplicationState>(
+        builder: (context, appState, _) => ListTile(
+          title: const Text("Google Sheet ID"),
+          subtitle: TextField(
+              controller: _textFieldController,
+              onSubmitted: (value) => {
+                    Constants.googleAppScriptWebURL = value,
+                    _textFieldController.text = value,
+                    appState.refreshList()
+                  },
+              onChanged: (value) => {
+                    Constants.googleAppScriptWebURL = value,
+                    _textFieldController.text = value,
+                    appState.refreshList()
+                  },
+                  ),
           // readOnly: _toggled,
-          
         ),
-        // value: _toggled,
-        // onChanged: (bool value) => {
-        //   setState(() => _toggled = value),
-        // },
       ),
       const ListTile(
         title: Text("Subject"),
@@ -66,8 +73,6 @@ class _SettingsFormState extends State<SettingsForm> {
         title: Text("School Code"),
         subtitle: TextField(),
       ),
-      const ListTile(title: Text("what else?")),
-      const ListTile(title: Text("what else?")),
     ]);
   }
 }

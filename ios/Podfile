@@ -39,3 +39,32 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
+
+target 'ImageNotification' do
+  use_frameworks!
+  pod 'Firebase/Messaging'
+end
+#DEPLOYMENT_TARGET_IOS = '9'
+#DEPLOYMENT_TARGET_MACOS = '10.12'
+#post_install do |installer|
+#    # Fix deployment target for pods that don't specify one
+#    # or specify one that is older than our own deployment target.
+#    desired_ios = Gem::Version.new(DEPLOYMENT_TARGET_IOS)
+#    desired_macos = Gem::Version.new(DEPLOYMENT_TARGET_MACOS)
+#
+#    installer.pods_project.targets.each do |target|
+#        target.build_configurations.each do |config|
+#            settings = config.build_settings
+#
+#            actual = Gem::Version.new(settings['IPHONEOS_DEPLOYMENT_TARGET'])
+#            if actual < desired_ios
+#                settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET_IOS
+#            end
+#
+#            actual = Gem::Version.new(settings['MACOSX_DEPLOYMENT_TARGET'])
+#            if actual < desired_macos
+#                settings['MACOSX_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET_MACOS
+#            end
+#        end
+#    end
+#end

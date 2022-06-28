@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:com.mindframe.rti/Administrator/easy_file_picker.dart';
 import 'package:com.mindframe.rti/settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:com.mindframe.rti/Administrator/student_assignment_screen.dart';
+import 'package:com.mindframe.rti/Student/student_assignment_screen.dart';
 import 'package:com.mindframe.rti/Administrator/admin_teacher_roster_page.dart';
-import 'package:com.mindframe.rti/Model/file_picker_demo.dart';
 import 'package:com.mindframe.rti/Parent/parent_page.dart';
 import 'package:com.mindframe.rti/role_page.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignments_page.dart';
@@ -12,6 +16,7 @@ import 'package:com.mindframe.rti/rti_assignments_page_by_subject.dart';
 import 'package:com.mindframe.rti/Administrator/teacher_list_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Administrator/admin_page.dart';
+import 'Firebase/firebase_options.dart';
 import 'Model/Authentication/application_state.dart';
 import 'Model/Authentication/authentication.dart';
 import 'Model/constants.dart';
@@ -19,7 +24,17 @@ import 'Model/role.dart';
 import 'group_list_screen.dart';
 import 'package:provider/provider.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(
     ChangeNotifierProvider(
         create: (context) => ApplicationState(),
@@ -57,7 +72,6 @@ class SignUpApp extends StatelessWidget {
             const AdminTeacherRosterScreen(),
         StudentAssignmentScreen.routeName: ((context) =>
             const StudentAssignmentScreen()),
-        '/file_picker': (context) => const FilePickerDemo(),
         '/easy_file_picker': (context) => const EasyFilePicker(
               title: "MyTitle",
             )
@@ -72,6 +86,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       backgroundColor: Colors.grey[400],
       body: Column(
         children: [
@@ -124,34 +139,40 @@ class SignUpForm extends StatefulWidget {
   _SignUpFormState createState() => _SignUpFormState();
 }
 
+Future<void> saveTokenToDatabase(String? token) async {
+  // Assume user is logged in
+  String uID = FirebaseAuth.instance.currentUser!.uid;
+  print("saving token to database");
+  await FirebaseFirestore.instance.collection('users').doc(uID).set({
+    'tokens': FieldValue.arrayUnion([token])
+  }, SetOptions(merge: true));
+  FirebaseFunctions functions = FirebaseFunctions.instance;
+  HttpsCallable myFunction = functions.httpsCallable("notify");
+  myFunction.call(<String, dynamic>{"userId": uID});
+  // await myDoc.update({
+  //   'tokens': FieldValue.arrayUnion(['tokens'])
+  // });
+}
+
 class _SignUpFormState extends State<SignUpForm> {
   Role dropdownValue = Role.teacher;
 
-  void _pushRelevantPage() async {
-    await Constants.teachers;
+  void firebaseLaunch() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    String uID = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFunctions functions = FirebaseFunctions.instance;
+    HttpsCallable myFunction = functions.httpsCallable("notify");
+    myFunction.call(<String, dynamic>{"userId": uID});
+  }
 
-    switch (UserData.role) {
-      case Role.student:
-
-        await Navigator.of(context).pushNamed('/student');
-        break;
-      case Role.teacher:
-/*currently there is no difference between the teacher and the admin page.*/
-        await Navigator.of(context).pushNamed('/admin');
-        break;
-      case Role.administrator:
-
-        await Navigator.of(context).pushNamed('/admin');
-        break;
-      case Role.parent:
-
-        await Navigator.of(context).pushNamed('/parent');
-        break;
-      // }
-      case Role.none:
-        // TODO: Handle this case.
-        break;
-    }
+  @override
+  void initState() {
+    super.initState();
+    // firebaseLaunch();
+    print("init main");
+    
   }
 
   @override
@@ -165,7 +186,6 @@ class _SignUpFormState extends State<SignUpForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('RTI',
-            
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline3),
             Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -208,7 +228,9 @@ class _SignUpFormState extends State<SignUpForm> {
                         : Colors.red.shade900;
                   }),
                 ),
-                onPressed: _pushRelevantPage,
+                onPressed: () {
+                  ApplicationState.pushRelevantPage(context);
+                },
                 child: Row(
                   children: const [
                     Spacer(),

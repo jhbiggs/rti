@@ -4,18 +4,18 @@
  * Copyright (c) 2022 Justin Biggs, Mindframe
  */
 enum Subject {
-  art,
-  business,
-  creditRecovery,
+  // art,
+  // business,
+  // creditRecovery,
   english,
-  fACS,
-  industrialTech,
+  // fACS,
+  // industrialTech,
   math,
-  music,
-  pE,
-  science,
-  specialEd,
-  socialStudies,
+  // music,
+  // pE,
+  // science,
+  // specialEd,
+  // socialStudies,
   none
 }
 
@@ -32,31 +32,33 @@ extension SubjectExtension on Subject {
 
   String get name {
     switch (this) {
-      case Subject.art:
-        return "Art";
-      case Subject.business:
-        return "Business";
-      case Subject.creditRecovery:
-        return "Credit Recovery";
+      // case Subject.art:
+      //   return "Art";
+      // case Subject.business:
+      //   return "Business";
+      // case Subject.creditRecovery:
+      //   return "Credit Recovery";
       case Subject.english:
         return "English";
-      case Subject.fACS:
-        return "FACS";
-      case Subject.industrialTech:
-        return "Industrial Tech";
+      // case Subject.fACS:
+      //   return "FACS";
+      // case Subject.industrialTech:
+      //   return "Industrial Tech";
       case Subject.math:
         return "Math";
-      case Subject.music:
-        return "Music";
-      case Subject.pE:
-        return "P.E.";
-      case Subject.science:
-        return "Science";
-      case Subject.socialStudies:
-        return "Social Studies";
-      case Subject.specialEd:
-        return "Special Education";
+      // case Subject.music:
+      //   return "Music";
+      // case Subject.pE:
+      //   return "P.E.";
+      // case Subject.science:
+      //   return "Science";
+      // case Subject.socialStudies:
+      //   return "Social Studies";
+      // case Subject.specialEd:
+      //   return "Special Education";
       case Subject.none:
+        return "Another subject";
+      default:
         return "No Subject Assigned";
     }
   }

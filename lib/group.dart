@@ -13,7 +13,7 @@ class Group {
   static int groupCounter = 0;
   late Teacher teacher;
   static final _blankGroup =
-      Group(Subject.art, Teacher("No Teacher", Subject.art, "Mrs. Blank"));
+      Group(Subject.english, Teacher("No Teacher", Subject.english, "Mrs. Blank"));
 
   int classCapacity = Constants.getClassCountDefault();
 

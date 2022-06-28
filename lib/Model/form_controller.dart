@@ -13,7 +13,7 @@ an HTTP GET request on Google App Script Web URL, then parses the response and s
 the result */
 class FormController {
   // Google App Script Web URL
-  static const String rawUri = Constants.googleAppScriptWebURL;
+  static String rawUri = Constants.googleAppScriptWebURL;
   static Uri uRL = Uri.parse(rawUri);
 
   // Success status message
@@ -21,7 +21,8 @@ class FormController {
 
   /* Async function loads student from endpoint URL and returns List. */
   Future<List<StudentForm>> getStudentList() async {
-    return await http.get(uRL).then((response) {
+    print("Getting list with ${Constants.googleAppScriptWebURL} as the URL");
+    return await http.get(Uri.parse(Constants.googleAppScriptWebURL)).then((response) {
       var jsonStudent = [];
       try {
         jsonStudent = convert.jsonDecode(response.body) as List;

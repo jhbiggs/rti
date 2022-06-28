@@ -118,6 +118,12 @@ const firebaseConfig = {
 </script>
 
 </script>
-
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    });
+  }
+</script>
 </body>
 </html>

@@ -11,6 +11,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:com.mindframe.rti/Model/form_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -19,6 +20,7 @@ import 'package:com.mindframe.rti/Model/role.dart';
 import 'package:com.mindframe.rti/Model/subject.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
 import 'package:com.mindframe.rti/Student/student.dart';
+import '../../main.dart';
 import '../constants.dart';
 import 'authentication.dart';
 import 'package:collection/collection.dart';
@@ -34,7 +36,7 @@ class ApplicationState extends ChangeNotifier {
   as it is a little more user-friendly imho. */
 
   ApplicationState() {
-    init();
+    setupFirebase();
   }
   Future<void> addAssignmentToList(RTIAssignment assignment) {
     final db = FirebaseDatabase.instance
@@ -66,6 +68,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> refreshList() async {
+    print("refreshing list");
     var formController = FormController();
     var studentList = await formController.getStudentList();
     for (var element in studentList) {
@@ -79,12 +82,20 @@ class ApplicationState extends ChangeNotifier {
   }
 
 // here is where the Google sheets transfer happens
-  Future<void> init() async {
-    print("init called");
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
+  Future<void> setupFirebase() async {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } catch (e) {
+      if (e.runtimeType == FirebaseException) {
+        print("It looks like your Firebase app was already initialized.");
+      }
+    }
+    // Set up the token and handling for notifications.  For phones only.
+    if (!kIsWeb) {
+      await _setUpToken();
+    }
     // _connectToFirebaseEmulator();
     FirebaseAuth.instance.userChanges().listen((user) async {
       if (user != null) {
@@ -103,6 +114,8 @@ class ApplicationState extends ChangeNotifier {
         if (isTeacher) {
           FormController formController = FormController();
           var studentList = await formController.getStudentList();
+          _guestBookMessages = [];
+
           for (var element in studentList) {
             _guestBookMessages.add(RTIAssignment(
                 standard: element.standard,
@@ -147,7 +160,10 @@ class ApplicationState extends ChangeNotifier {
           //     // .snapshots()
           //     .listen((event) {
           FormController formController = FormController();
+          print("isAdmin");
           var studentList = await formController.getStudentList();
+          _guestBookMessages = [];
+
           for (var element in studentList) {
             _guestBookMessages.add(RTIAssignment(
                 standard: element.standard,
@@ -220,15 +236,53 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  Future<void> _setUpToken() async {
+    // Get the token each time the application loads
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("setting up token");
+
+    // Save the token to the database
+    await saveTokenToDatabase(token ?? "no token yet");
+
+    // Anytime the token refreshes, save the new one as well
+    FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+  }
+
 //duplicate method, need a way to consolidate into the main method's
 //identical version
-  void _pushRelevantPage(BuildContext context) async {
+  static void pushRelevantPage(BuildContext context) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: true,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+    // FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // String? token = await messaging.getToken(
+    //     vapidKey:
+    //         "BGFZe5UiA0qg2O429JM4JQ_ZXy1YUW-MFl6gRAx7Pi9D0VbzQp79hxO2hrThlPwlJSvgDt35_feU1YvT_IuLfs8",
+    //         );
+    // print(token!);
     switch (UserData.role) {
       case Role.student:
         await Navigator.of(context).pushNamed('/student');
         break;
       case Role.teacher:
-        await Navigator.of(context).pushNamed('/teacher');
+        await Navigator.of(context).pushNamed('/admin');
         break;
       case Role.administrator:
         await Navigator.of(context).pushNamed('/admin');
@@ -328,13 +382,13 @@ class ApplicationState extends ChangeNotifier {
             const CaseInsensitiveEquality()
                 .equals(element.name, ((result.claims!['subject'] as String))));
         UserData.role = Role.teacher;
-        _pushRelevantPage(context);
+        pushRelevantPage(context);
       }
       if (result.claims != null &&
           result.claims!['admin'] != null &&
           result.claims!['admin'] == true) {
         UserData.role = Role.administrator;
-        _pushRelevantPage(context);
+        pushRelevantPage(context);
       }
     } on FirebaseAuthException catch (e) {
       errorCallback(e);

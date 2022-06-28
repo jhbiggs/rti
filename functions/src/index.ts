@@ -6,6 +6,26 @@ import {auth} from "firebase-admin";
 admin.initializeApp();
 admin.auth();
 
+// notification function
+
+exports.notify = functions.https.onCall(async (data, context) => {
+  const userId =  await admin.firestore()
+  .collection("users")
+  .doc(data.userId).get();
+
+  admin.messaging().sendToDevice(
+     userId.data()?.tokens,
+    {
+      notification: {
+        title: "Hi " + data.name,
+        body: "Welcome to our first cloud function",
+        sound: "default"
+
+      }
+    }
+  );
+});
+
 // add administrator function
 exports.addAdmin = functions.https.onCall((data, context) => {
   admin.auth().createUser({
@@ -25,7 +45,6 @@ exports.addAdmin = functions.https.onCall((data, context) => {
     };
   });
 });
-
 
 /**
  * @param {admin.auth.UserRecord} user the user"s email

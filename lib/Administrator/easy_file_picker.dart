@@ -1,5 +1,4 @@
 
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -34,9 +33,7 @@ class _EasyFilePickerState extends State<EasyFilePicker> {
 
   _uploadFileToGoogleDrive() async {
     ga.File fileToUpload = ga.File();
-    var file = await FilePicker.platform.pickFiles();
     fileToUpload.parents = ["appDataFolder"];
-    fileToUpload.name = path.basename(file?.paths.first ?? "nothing");
     // print(response);
     _listGoogleDriveFiles();
   }

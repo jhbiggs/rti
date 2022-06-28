@@ -52,12 +52,12 @@ dependencies:
   cloud_functions: ^3.2.5
   collection: ^1.15.0
   integration_test: ^0.8.1
-  file_picker: ^4.4.0
   firebase_database: ^9.0.7
   url_launcher: ^6.0.20
   google_sign_in: ^5.2.4
   googleapis: ^8.1.0
   web_socket_channel: ^2.2.0
+  firebase_messaging: ^11.4.1
 
 dev_dependencies:
   flutter_test:

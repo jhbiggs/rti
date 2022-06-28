@@ -7,9 +7,27 @@ class SubjectListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+              appBar: AppBar(
+        flexibleSpace: Row(
+            children:  [
+               const Spacer(),
+               Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Column(
+                   children:  [
+                     const Spacer(),
+                     IconButton(
+                        icon: const Icon(Icons.settings), 
+                        onPressed: () async { await Navigator.of(context).pushNamed('/settings'); },
+                        ),
+                     const Spacer(),
+                   ],
+                 ),
+               ),
+            ],
+          ),
           title: const Text('Subjects'),
-        ),
+      ),
         backgroundColor: Colors.grey[200],
         body: const Center(
           child: SizedBox(

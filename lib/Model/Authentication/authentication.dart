@@ -296,7 +296,7 @@ class _RegisterFormGeneralState extends State<RegisterFormGeneral> {
   final _schoolCodeController = TextEditingController();
 
   Role _dropdownValueRole = Role.parent;
-  Subject _dropDownValueSubject = Subject.art;
+  Subject _dropDownValueSubject = Subject.english;
   var _isDropdownSubjectVisible = false;
 
   final _passwordController = TextEditingController();

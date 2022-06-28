@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:com.mindframe.rti/RTIAssignment/rti_assignment.dart';
 import 'package:com.mindframe.rti/widgets.dart';
 
-import '../Administrator/student_assignment_screen.dart';
+import '../Student/student_assignment_screen.dart';
 import '../Model/form_controller.dart';
 import '../Model/student_form.dart';
 import '../Model/subject.dart';
@@ -175,10 +175,11 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
             isThreeLine: true,
             title: Text(
                 '${widget.assignments.elementAt(index).student.getName()} needs help in '
-                ' ${widget.assignments.elementAt(index).subject} with '
-                '${widget.assignments.elementAt(index).standard}'),
+                ' ${widget.assignments.elementAt(index).subject}'),
+              //  '${widget.assignments.elementAt(index).standard}'),
             subtitle: Text(
-                'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
+                // 'The assignment is: ${widget.assignments.elementAt(index).assignmentName} and will continue 
+                ' from ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).startDate)} '
                 'until ${DateFormat.MMMMEEEEd().format(widget.assignments.elementAt(index).endDate!)}'),
             onTap: () {
               _pushStudentAssignmentPage(widget.assignments.elementAt(index));
@@ -227,40 +228,40 @@ class _RtIAssignmentListState extends State<RtIAssignmentList> {
             ),
           ],
         ),
-        StyledButton(
-            onPressed: () {},
-            child: TextFormField(
-              controller: _standardTextController,
-              decoration: const InputDecoration(
-                hintText: 'Standard',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'enter your message and continue';
-                }
-                return null;
-              },
-            )),
-        StyledButton(
-          onPressed: () {},
-          child: Row(
-            children: [
-              Expanded(
-                  child: TextFormField(
-                controller: _assignmentTextController,
-                decoration: const InputDecoration(
-                  hintText: 'Assignment',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'enter your message and continue';
-                  }
-                  return null;
-                },
-              )),
-            ],
-          ),
-        ),
+        // StyledButton(
+        //     onPressed: () {},
+        //     child: TextFormField(
+        //       controller: _standardTextController,
+        //       decoration: const InputDecoration(
+        //         hintText: 'Standard',
+        //       ),
+        //       validator: (value) {
+        //         if (value == null || value.isEmpty) {
+        //           return 'enter your message and continue';
+        //         }
+        //         return null;
+        //       },
+        //     )),
+        // StyledButton(
+        //   onPressed: () {},
+        //   child: Row(
+        //     children: [
+        //       Expanded(
+        //           child: TextFormField(
+        //         controller: _assignmentTextController,
+        //         decoration: const InputDecoration(
+        //           hintText: 'Assignment',
+        //         ),
+        //         validator: (value) {
+        //           if (value == null || value.isEmpty) {
+        //             return 'enter your message and continue';
+        //           }
+        //           return null;
+        //         },
+        //       )),
+        //     ],
+        //   ),
+        // ),
         StyledButton(
             child: Row(children: [
               Expanded(
